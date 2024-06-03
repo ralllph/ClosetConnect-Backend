@@ -5,5 +5,15 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <include file="" />
+    <include file="scripts/1_CREATE_USERS_TABLE.sql" relativeToChangelogFile="true" author="Izueke Raphael" />
+    <changeSet id="alter-User-Table" author="Izueke Raphaele">
+        <sql>ALTER TABLE User RENAME TO users_table;</sql>
+    </changeSet>
+    <include file="scripts/2_CREATE_CLOTHING_ITEMS_TABLE.sql" relativeToChangelogFile="true" author="Izueke Raphael" />
+    <include file="scripts/3.CREATE_TRADES_TABLE.sql" relativeToChangelogFile="true" author="Izueke Raphael" />
+    <include file="scripts/4_CREATE_BID_TABLE.sql" relativeToChangelogFile="true" author="Izueke Raphael" />
+    <include file="scripts/5_CREATE_DONATIONS_TABLE.sql" relativeToChangelogFile="true" author="Izueke Raphael" />
+    <include file="scripts/6_CREATE_MESSAGE_TABLE.sql" relativeToChangelogFile="true" author="Izueke Raphael" />
+    <include file="scripts/7_CREATE_RATING_TABLE.sql" relativeToChangelogFile="true" author="Izueke Raphael" />
+    <include file="scripts/8_CREATE_REPORT_TABLE.sql" relativeToChangelogFile="true" author="Izueke Raphael" />
 </databaseChangeLog>
