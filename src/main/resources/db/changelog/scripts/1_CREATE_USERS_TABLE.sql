@@ -1,0 +1,9 @@
+CREATE TABLE User (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    name VARCHAR(255),
+    clothingSize VARCHAR(10),
+    role VARCHAR(10) DEFAULT 'USER'
+)AUTO_INCREMENT = 1;
