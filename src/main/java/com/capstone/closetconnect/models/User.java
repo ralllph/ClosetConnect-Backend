@@ -1,13 +1,18 @@
 package com.capstone.closetconnect.models;
 
 import com.capstone.closetconnect.dtos.UserDto;
+import com.capstone.closetconnect.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -18,7 +23,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Data
 @Table(name = "users_table")
-public class User implements Serializable {
+public class User implements Serializable, UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,7 +49,8 @@ public class User implements Serializable {
     private List<Donations> donations;
 
     @Column(nullable = false)
-    private String role = "USER";
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.USER;
 
     @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY , cascade = CascadeType.ALL)
     private Set<Message> sentMessages;
@@ -70,7 +76,7 @@ public class User implements Serializable {
 
     public static UserDto toUserEntity(User user) {
         UserDto userDto = new UserDto();
-        userDto.setUserName(user.getUserName());
+        userDto.setUserName(user.getUsername());
         userDto.setEmail(user.getEmail());
         userDto.setName(user.getName());
         userDto.setClothingSize(user.getClothingSize());
@@ -112,5 +118,35 @@ public class User implements Serializable {
                 ", reportsReceived=" + reportsReceived +
                 '}';
     }
-    
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        //authorities are the roles added in enum.. role refers to role field
+        return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return UserDetails.super.isEnabled();
+    }
 }

@@ -1,5 +1,6 @@
 package com.capstone.closetconnect.dtos;
 
+import com.capstone.closetconnect.enums.Role;
 import com.capstone.closetconnect.models.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,11 +16,16 @@ import java.util.Objects;
 public class UserDto {
 
     private String userName;
+
     private String username;
+
     private String email;
+
     private String name;
+
     private String clothingSize;
-    private String role;
+
+    private Role role;
 
     public static User toUserEntity(UserDto userDto) {
         User user = new User();
