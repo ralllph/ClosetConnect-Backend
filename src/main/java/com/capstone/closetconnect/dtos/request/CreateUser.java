@@ -1,6 +1,5 @@
 package com.capstone.closetconnect.dtos;
 
-import com.capstone.closetconnect.enums.Role;
 import com.capstone.closetconnect.models.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +12,7 @@ import java.util.Objects;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
+public class CreateUser {
 
     private String userName;
 
@@ -25,15 +24,13 @@ public class UserDto {
 
     private String clothingSize;
 
-    private Role role;
 
-    public static User toUserEntity(UserDto userDto) {
+    public static User toUserEntity(CreateUser userDto) {
         User user = new User();
         user.setUserName(userDto.getUserName());
         user.setEmail(userDto.getEmail());
         user.setName(userDto.getName());
         user.setClothingSize(userDto.getClothingSize());
-        user.setRole(userDto.getRole());
         return user;
     }
 
@@ -41,13 +38,13 @@ public class UserDto {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserDto userDto = (UserDto) o;
-        return Objects.equals(userName, userDto.userName) && Objects.equals(username, userDto.username) && Objects.equals(email, userDto.email) && Objects.equals(name, userDto.name) && Objects.equals(clothingSize, userDto.clothingSize) && Objects.equals(role, userDto.role);
+        CreateUser userDto = (CreateUser) o;
+        return Objects.equals(userName, userDto.userName) && Objects.equals(username, userDto.username) && Objects.equals(email, userDto.email) && Objects.equals(name, userDto.name) && Objects.equals(clothingSize, userDto.clothingSize);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userName, username, email, name, clothingSize, role);
+        return Objects.hash(userName, username, email, name, clothingSize);
     }
 
     @Override
@@ -58,7 +55,6 @@ public class UserDto {
                 ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
                 ", clothingSize='" + clothingSize + '\'' +
-                ", role='" + role + '\'' +
                 '}';
     }
 }
