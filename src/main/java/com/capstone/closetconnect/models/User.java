@@ -1,6 +1,7 @@
 package com.capstone.closetconnect.models;
 
-import com.capstone.closetconnect.dtos.UserDto;
+import com.capstone.closetconnect.dtos.request.CreateUser;
+import com.capstone.closetconnect.enums.ClothSize;
 import com.capstone.closetconnect.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -40,7 +41,13 @@ public class User implements Serializable, UserDetails {
 
     private String name;
 
-    private String clothingSize;
+    @Column(name = "top_size")
+    @Enumerated(EnumType.STRING)
+    private ClothSize topSize;
+
+    @Column(name = "bottom_size")
+    @Enumerated(EnumType.STRING)
+    private ClothSize bottomSize;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY , cascade = CascadeType.ALL)
     private List<ClothingItems> clothingItems;
@@ -74,13 +81,13 @@ public class User implements Serializable, UserDetails {
     private List<Report> reportsReceived;
 
 
-    public static UserDto toUserEntity(User user) {
-        UserDto userDto = new UserDto();
+    public static CreateUser toUserDto(User user) {
+        CreateUser userDto = new CreateUser();
         userDto.setUserName(user.getUsername());
         userDto.setEmail(user.getEmail());
         userDto.setName(user.getName());
-        userDto.setClothingSize(user.getClothingSize());
-        userDto.setRole(user.getRole());
+        userDto.setTopSize(user.getTopSize());
+        userDto.setBottomSize(user.getBottomSize());
         return userDto;
     }
 
@@ -89,12 +96,12 @@ public class User implements Serializable, UserDetails {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(userName, user.userName) && Objects.equals(password, user.password) && Objects.equals(email, user.email) && Objects.equals(name, user.name) && Objects.equals(clothingSize, user.clothingSize) && Objects.equals(clothingItems, user.clothingItems) && Objects.equals(donations, user.donations) && Objects.equals(role, user.role) && Objects.equals(sentMessages, user.sentMessages) && Objects.equals(receivedMessages, user.receivedMessages) && Objects.equals(bids, user.bids) && Objects.equals(ratingsGiven, user.ratingsGiven) && Objects.equals(ratingsReceived, user.ratingsReceived) && Objects.equals(reportsSent, user.reportsSent) && Objects.equals(reportsReceived, user.reportsReceived);
+        return Objects.equals(id, user.id) && Objects.equals(userName, user.userName) && Objects.equals(password, user.password) && Objects.equals(email, user.email) && Objects.equals(name, user.name) && topSize == user.topSize && bottomSize == user.bottomSize && Objects.equals(clothingItems, user.clothingItems) && Objects.equals(donations, user.donations) && role == user.role && Objects.equals(sentMessages, user.sentMessages) && Objects.equals(receivedMessages, user.receivedMessages) && Objects.equals(bids, user.bids) && Objects.equals(ratingsGiven, user.ratingsGiven) && Objects.equals(ratingsReceived, user.ratingsReceived) && Objects.equals(reportsSent, user.reportsSent) && Objects.equals(reportsReceived, user.reportsReceived);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userName, password, email, name, clothingSize, clothingItems, donations, role, sentMessages, receivedMessages, bids, ratingsGiven, ratingsReceived, reportsSent, reportsReceived);
+        return Objects.hash(id, userName, password, email, name, topSize, bottomSize, clothingItems, donations, role, sentMessages, receivedMessages, bids, ratingsGiven, ratingsReceived, reportsSent, reportsReceived);
     }
 
     @Override
@@ -105,10 +112,11 @@ public class User implements Serializable, UserDetails {
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
-                ", clothingSize='" + clothingSize + '\'' +
+                ", topSize=" + topSize +
+                ", bottomSize=" + bottomSize +
                 ", clothingItems=" + clothingItems +
                 ", donations=" + donations +
-                ", role='" + role + '\'' +
+                ", role=" + role +
                 ", sentMessages=" + sentMessages +
                 ", receivedMessages=" + receivedMessages +
                 ", bids=" + bids +

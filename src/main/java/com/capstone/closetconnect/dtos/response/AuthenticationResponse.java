@@ -1,4 +1,4 @@
-package com.capstone.closetconnect.auth;
+package com.capstone.closetconnect.dtos.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

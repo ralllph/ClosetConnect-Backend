@@ -1,4 +1,4 @@
-package com.capstone.closetconnect.exception;
+package com.capstone.closetconnect.exceptions;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

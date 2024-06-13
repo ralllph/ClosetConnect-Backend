@@ -1,4 +1,4 @@
-package com.capstone.closetconnect.dtos;
+package com.capstone.closetconnect.dtos.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

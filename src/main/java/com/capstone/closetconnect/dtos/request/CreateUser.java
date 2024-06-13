@@ -1,6 +1,11 @@
-package com.capstone.closetconnect.dtos;
+package com.capstone.closetconnect.dtos.request;
 
+import com.capstone.closetconnect.enums.ClothSize;
+import com.capstone.closetconnect.enums.Role;
 import com.capstone.closetconnect.models.User;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,23 +19,37 @@ import java.util.Objects;
 @NoArgsConstructor
 public class CreateUser {
 
+    @NotBlank(message = "user name cannot be blank")
     private String userName;
 
-    private String username;
+    @NotBlank(message = "Password cannot be blank")
+    private String password;
 
+    @NotNull(message = "Top size cannot be blank")
+    private ClothSize topSize;
+
+    @NotNull(message = "Bottom size cannot be blank")
+    private ClothSize bottomSize;
+
+    @NotBlank(message = "Email cannot be blank")
+    @Email(message = "Email is not valid", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
     private String email;
 
+    @NotBlank(message = "Name cannot be blank")
     private String name;
 
-    private String clothingSize;
+    @NotNull(message = "Role cannot be blank")
+    private Role role;
 
 
     public static User toUserEntity(CreateUser userDto) {
         User user = new User();
         user.setUserName(userDto.getUserName());
+        user.setPassword(userDto.getPassword());
         user.setEmail(userDto.getEmail());
         user.setName(userDto.getName());
-        user.setClothingSize(userDto.getClothingSize());
+        user.setTopSize(userDto.getTopSize());
+        user.setRole(userDto.getRole());
         return user;
     }
 
@@ -38,23 +57,26 @@ public class CreateUser {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CreateUser userDto = (CreateUser) o;
-        return Objects.equals(userName, userDto.userName) && Objects.equals(username, userDto.username) && Objects.equals(email, userDto.email) && Objects.equals(name, userDto.name) && Objects.equals(clothingSize, userDto.clothingSize);
+        CreateUser that = (CreateUser) o;
+        return Objects.equals(userName, that.userName) && Objects.equals(password, that.password) && topSize == that.topSize && bottomSize == that.bottomSize && Objects.equals(email, that.email) && Objects.equals(name, that.name) && role == that.role;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userName, username, email, name, clothingSize);
+        return Objects.hash(userName, password, topSize, bottomSize, email, name, role);
     }
 
     @Override
     public String toString() {
-        return "UserDto{" +
+        return "CreateUser{" +
                 "userName='" + userName + '\'' +
-                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", topSize=" + topSize +
+                ", bottomSize=" + bottomSize +
                 ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
-                ", clothingSize='" + clothingSize + '\'' +
+                ", role=" + role +
                 '}';
     }
+
 }

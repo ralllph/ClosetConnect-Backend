@@ -8,9 +8,11 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -50,10 +52,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         //to manipulate tokens(extract username and other things ), you need to add
         // jjwt-api,impl and jackson dependency
         userEmail = jwtService.extractUsername(jwt);
+
         //check if email exist and if user isn't already authenticated ie. don't repeat checks for authenticated user
         if(userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null){
             //check user exist in db
-            UserDetails userDetails = this.UserDetailsService.loadUserByUsername(userEmail);
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+            //if user exist and token valid update security context
+            if(jwtService.isTokenValid(jwt, userDetails)){
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities()
+                );
+                authToken.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request)
+                );
+                //update security context
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
         }
+
+        //pass to the next filter!to be executed
+        filterChain.doFilter(request,response);
     }
 }
