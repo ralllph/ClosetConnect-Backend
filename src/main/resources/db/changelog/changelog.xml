@@ -16,4 +16,15 @@
     <include file="scripts/6_CREATE_MESSAGE_TABLE.sql" relativeToChangelogFile="true" author="Izueke Raphael" />
     <include file="scripts/7_CREATE_RATING_TABLE.sql" relativeToChangelogFile="true" author="Izueke Raphael" />
     <include file="scripts/8_CREATE_REPORT_TABLE.sql" relativeToChangelogFile="true" author="Izueke Raphael" />
+    <changeSet id="alter-User-Table" author="Izueke Raphael">
+        <renameColumn
+                tableName="users_table"
+                oldColumnName="clothingSize"
+                newColumnName="clothing_size"
+                columnDataType="VARCHAR(255)" />
+    </changeSet>
+    <include file="scripts/9_ALTER_USER_TABLE_ADD_BOTTOM_SIZE.sql" relativeToChangelogFile="true" author="Izueke Raphael" />
+    <include file="scripts/10_ALTER_USER_TABLE_DROP_CLOTH_SIZE.sql" relativeToChangelogFile="true" author="Izueke Raphael" />
+    <include file="scripts/11_ALTER_USER_TABLE_ADD_TOP_SIZE.sql" relativeToChangelogFile="true" author="Izueke Raphael" />
+    <include file="scripts/12.ALTER_USERS_TABLE_ADD_EMAIL_UNIQUE_CONST.sql" relativeToChangelogFile="true" author="Izueke Raphael" />
 </databaseChangeLog>

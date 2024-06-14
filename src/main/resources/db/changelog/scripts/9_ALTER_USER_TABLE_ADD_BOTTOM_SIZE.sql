@@ -1,0 +1,1 @@
+ALTER TABLE users_table ADD COLUMN bottom_size VARCHAR(255) DEFAULT 'MEDIUM';
