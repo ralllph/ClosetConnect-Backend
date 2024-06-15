@@ -6,6 +6,7 @@ import com.capstone.closetconnect.models.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,6 +24,11 @@ public class CreateUser {
     private String userName;
 
     @NotBlank(message = "Password cannot be blank")
+    @Pattern(
+            regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&#])[A-Za-z\\d@$!%*?&#]{8,}$",
+            message = "Password must be at least 8 characters long and contain at least one letter, one number," +
+                    "and a special character)"
+    )
     private String password;
 
     @NotNull(message = "Top size cannot be blank")

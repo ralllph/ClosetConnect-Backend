@@ -2,6 +2,7 @@ package com.capstone.closetconnect;
 
 import com.capstone.closetconnect.exceptions.ErrorResponse;
 
+import com.capstone.closetconnect.exceptions.LoginFailedException;
 import com.capstone.closetconnect.exceptions.UserrAlreadyExistsException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.util.ArrayList;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -40,5 +40,11 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> NotFoundException(UserrAlreadyExistsException exception){
         ErrorResponse error = new ErrorResponse(Collections.singletonList(exception.getLocalizedMessage()));
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(LoginFailedException.class)
+    public ResponseEntity<Object> NotFoundException(LoginFailedException exception){
+        ErrorResponse error = new ErrorResponse(Collections.singletonList(exception.getLocalizedMessage()));
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 }
