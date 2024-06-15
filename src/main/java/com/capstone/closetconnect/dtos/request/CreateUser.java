@@ -1,6 +1,7 @@
 package com.capstone.closetconnect.dtos.request;
 
 import com.capstone.closetconnect.enums.ClothSize;
+import com.capstone.closetconnect.enums.Gender;
 import com.capstone.closetconnect.enums.Role;
 import com.capstone.closetconnect.models.User;
 import jakarta.validation.constraints.Email;
@@ -47,6 +48,9 @@ public class CreateUser {
     @NotNull(message = "Role cannot be blank")
     private Role role;
 
+    @NotNull(message = "Gender cannot be blank")
+    private Gender gender;
+
 
     public static User toUserEntity(CreateUser userDto) {
         User user = new User();
@@ -56,6 +60,7 @@ public class CreateUser {
         user.setName(userDto.getName());
         user.setTopSize(userDto.getTopSize());
         user.setRole(userDto.getRole());
+        user.setGender(userDto.getGender());
         return user;
     }
 
@@ -64,12 +69,12 @@ public class CreateUser {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CreateUser that = (CreateUser) o;
-        return Objects.equals(userName, that.userName) && Objects.equals(password, that.password) && topSize == that.topSize && bottomSize == that.bottomSize && Objects.equals(email, that.email) && Objects.equals(name, that.name) && role == that.role;
+        return Objects.equals(userName, that.userName) && Objects.equals(password, that.password) && topSize == that.topSize && bottomSize == that.bottomSize && Objects.equals(email, that.email) && Objects.equals(name, that.name) && role == that.role && gender == that.gender;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userName, password, topSize, bottomSize, email, name, role);
+        return Objects.hash(userName, password, topSize, bottomSize, email, name, role, gender);
     }
 
     @Override
@@ -82,6 +87,7 @@ public class CreateUser {
                 ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
                 ", role=" + role +
+                ", gender=" + gender +
                 '}';
     }
 

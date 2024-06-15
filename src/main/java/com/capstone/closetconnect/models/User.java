@@ -2,6 +2,7 @@ package com.capstone.closetconnect.models;
 
 import com.capstone.closetconnect.dtos.request.CreateUser;
 import com.capstone.closetconnect.enums.ClothSize;
+import com.capstone.closetconnect.enums.Gender;
 import com.capstone.closetconnect.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -57,6 +58,10 @@ public class User implements Serializable, UserDetails {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
 
     @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY , cascade = CascadeType.ALL)
@@ -88,6 +93,7 @@ public class User implements Serializable, UserDetails {
         userDto.setName(user.getName());
         userDto.setTopSize(user.getTopSize());
         userDto.setBottomSize(user.getBottomSize());
+        userDto.setGender(user.getGender());
         return userDto;
     }
 
@@ -96,12 +102,12 @@ public class User implements Serializable, UserDetails {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(userName, user.userName) && Objects.equals(password, user.password) && Objects.equals(email, user.email) && Objects.equals(name, user.name) && topSize == user.topSize && bottomSize == user.bottomSize && Objects.equals(clothingItems, user.clothingItems) && Objects.equals(donations, user.donations) && role == user.role && Objects.equals(sentMessages, user.sentMessages) && Objects.equals(receivedMessages, user.receivedMessages) && Objects.equals(bids, user.bids) && Objects.equals(ratingsGiven, user.ratingsGiven) && Objects.equals(ratingsReceived, user.ratingsReceived) && Objects.equals(reportsSent, user.reportsSent) && Objects.equals(reportsReceived, user.reportsReceived);
+        return Objects.equals(id, user.id) && Objects.equals(userName, user.userName) && Objects.equals(password, user.password) && Objects.equals(email, user.email) && Objects.equals(name, user.name) && topSize == user.topSize && bottomSize == user.bottomSize && Objects.equals(clothingItems, user.clothingItems) && Objects.equals(donations, user.donations) && gender == user.gender && role == user.role && Objects.equals(sentMessages, user.sentMessages) && Objects.equals(receivedMessages, user.receivedMessages) && Objects.equals(bids, user.bids) && Objects.equals(ratingsGiven, user.ratingsGiven) && Objects.equals(ratingsReceived, user.ratingsReceived) && Objects.equals(reportsSent, user.reportsSent) && Objects.equals(reportsReceived, user.reportsReceived);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userName, password, email, name, topSize, bottomSize, clothingItems, donations, role, sentMessages, receivedMessages, bids, ratingsGiven, ratingsReceived, reportsSent, reportsReceived);
+        return Objects.hash(id, userName, password, email, name, topSize, bottomSize, clothingItems, donations, gender, role, sentMessages, receivedMessages, bids, ratingsGiven, ratingsReceived, reportsSent, reportsReceived);
     }
 
     @Override
@@ -116,6 +122,7 @@ public class User implements Serializable, UserDetails {
                 ", bottomSize=" + bottomSize +
                 ", clothingItems=" + clothingItems +
                 ", donations=" + donations +
+                ", gender=" + gender +
                 ", role=" + role +
                 ", sentMessages=" + sentMessages +
                 ", receivedMessages=" + receivedMessages +
