@@ -38,6 +38,7 @@ public class ClothingItems implements Serializable {
     private String itemCondition;
 
     @Column(name = "clothing_item_size")
+    @Enumerated(EnumType.STRING)
     private String clothingItemSize;
 
     @Column(name = "status")
