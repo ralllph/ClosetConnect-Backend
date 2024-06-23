@@ -1,6 +1,7 @@
 package com.capstone.closetconnect.models;
 
 import com.capstone.closetconnect.dtos.ClothingItemsDto;
+import com.capstone.closetconnect.enums.ClothSize;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -39,7 +40,7 @@ public class ClothingItems implements Serializable {
 
     @Column(name = "clothing_item_size")
     @Enumerated(EnumType.STRING)
-    private String clothingItemSize;
+    private ClothSize clothingItemSize;
 
     @Column(name = "status")
     private String status = "AVAILABLE";

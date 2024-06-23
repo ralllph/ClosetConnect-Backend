@@ -1,5 +1,6 @@
 package com.capstone.closetconnect.dtos;
 
+import com.capstone.closetconnect.enums.ClothSize;
 import com.capstone.closetconnect.models.ClothingItems;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +23,7 @@ public class ClothingItemsDto {
 
     private String itemCondition;
 
-    private String clothingItemSize;
+    private ClothSize clothingItemSize;
 
     private String status;
 
