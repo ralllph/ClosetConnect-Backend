@@ -1,9 +1,7 @@
 package com.capstone.closetconnect;
 
-import com.capstone.closetconnect.exceptions.ErrorResponse;
+import com.capstone.closetconnect.exceptions.*;
 
-import com.capstone.closetconnect.exceptions.LoginFailedException;
-import com.capstone.closetconnect.exceptions.UserrAlreadyExistsException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -36,15 +34,26 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(new ErrorResponse(errorList),HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(UserrAlreadyExistsException.class)
-    public ResponseEntity<Object> NotFoundException(UserrAlreadyExistsException exception){
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<Object> AlreadyExistsException(UserAlreadyExistsException exception){
+        ErrorResponse error = new ErrorResponse(Collections.singletonList(exception.getLocalizedMessage()));
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Object> NotFoundException(NotFoundException exception){
         ErrorResponse error = new ErrorResponse(Collections.singletonList(exception.getLocalizedMessage()));
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
-
     @ExceptionHandler(LoginFailedException.class)
     public ResponseEntity<Object> NotFoundException(LoginFailedException exception){
         ErrorResponse error = new ErrorResponse(Collections.singletonList(exception.getLocalizedMessage()));
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(MissingParameterException.class)
+    public ResponseEntity<Object> MissingParameterException(MissingParameterException exception){
+        ErrorResponse error = new ErrorResponse(Collections.singletonList(exception.getLocalizedMessage()));
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 }

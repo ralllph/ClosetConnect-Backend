@@ -1,6 +1,7 @@
 package com.capstone.closetconnect.dtos;
 
 import com.capstone.closetconnect.enums.ClothSize;
+import com.capstone.closetconnect.enums.ClothType;
 import com.capstone.closetconnect.enums.Gender;
 import com.capstone.closetconnect.models.ClothingItems;
 import lombok.AllArgsConstructor;
@@ -20,7 +21,7 @@ public class ClothingItemsDto {
 
     private String description;
 
-    private String type;
+    private ClothType  type;
 
     private String itemCondition;
 
@@ -39,7 +40,7 @@ public class ClothingItemsDto {
         clothingItem.setPhotoUrl(clothingItemsDto.getPhotoUrl());
         clothingItem.setName(clothingItemsDto.getName());
         clothingItem.setGender(clothingItemsDto.getGender());
-        clothingItem.setDescriptiom(clothingItemsDto.getDescription());
+        clothingItem.setDescription(clothingItemsDto.getDescription());
         clothingItem.setType(clothingItemsDto.getType());
         clothingItem.setItemCondition(clothingItemsDto.getItemCondition());
         clothingItem.setClothingItemSize(clothingItemsDto.getClothingItemSize());

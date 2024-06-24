@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserDetails {
 
+    private Long id;
+
     private String userName;
 
     private ClothSize topSize;

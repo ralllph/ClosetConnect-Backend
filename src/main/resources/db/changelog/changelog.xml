@@ -30,4 +30,6 @@
     <include file="scripts/13_ALTER_USERS_TABLE_ADD_GENDER.sql" relativeToChangelogFile="true" author="Izueke Raphael" />
     <include file="scripts/14_ALTER_CLOTHING_ITEMS_TABLE_ADD_NAME.sql" relativeToChangelogFile="true" author="Izueke Raphael" />
     <include file="scripts/15_ALTER_CLOTHING_ITEMS_TABLE_ADD_GENDER.sql" relativeToChangelogFile="true" author="Izueke Raphael" />
+    <include file="scripts/16_ALTER_CLOTHING_ITEMS_TABLE_ADD_DONATION.sql" relativeToChangelogFile="true" author="Izueke Raphael" />
+    <include file="scripts/17_ALTER_CLOTHING_ITEMS_TABLE_ADD_DONATION_CONSTRAINT.sql" relativeToChangelogFile="true" author="Izueke Raphael" />
 </databaseChangeLog>
