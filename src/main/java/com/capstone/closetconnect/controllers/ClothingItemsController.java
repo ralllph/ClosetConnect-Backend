@@ -28,6 +28,8 @@ public class ClothingItemsController {
             (@RequestParam Long userId, @RequestParam(required = false) String itemName,
              @RequestParam(required = false) ClothType itemType, @RequestParam(required = false)
              Gender gender){
+        log.info("Incoming search request for user with id {} with parameters: " +
+                "itemName={}, itemType={}, gender={}", userId, itemName, itemType, gender);
         return new ResponseEntity<>(clothingItemsService.
                 searchUserClothingItems(userId,itemName,itemType,gender),
                 HttpStatus.OK);
