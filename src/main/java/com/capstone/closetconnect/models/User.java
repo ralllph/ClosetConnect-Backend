@@ -1,6 +1,7 @@
 package com.capstone.closetconnect.models;
 
 import com.capstone.closetconnect.dtos.request.CreateUser;
+import com.capstone.closetconnect.dtos.response.UserDetail;
 import com.capstone.closetconnect.enums.ClothSize;
 import com.capstone.closetconnect.enums.Gender;
 import com.capstone.closetconnect.enums.Role;
@@ -86,14 +87,15 @@ public class User implements Serializable, UserDetails {
     private List<Report> reportsReceived;
 
 
-    public static CreateUser toUserDto(User user) {
-        CreateUser userDto = new CreateUser();
+    public  UserDetail toUserDto(User user) {
+        UserDetail userDto = new UserDetail();
         userDto.setUserName(user.getUsername());
         userDto.setEmail(user.getEmail());
         userDto.setName(user.getName());
         userDto.setTopSize(user.getTopSize());
         userDto.setBottomSize(user.getBottomSize());
         userDto.setGender(user.getGender());
+        userDto.setRole(user.getRole());
         return userDto;
     }
 

@@ -1,5 +1,6 @@
 package com.capstone.closetconnect.configs;
 
+import com.capstone.closetconnect.exceptions.NotFoundException;
 import com.capstone.closetconnect.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +24,7 @@ public class ApplicationConfig {
     @Bean
     public UserDetailsService userDetailsService(){
         return username -> userRepository.findByEmail(username)
-                .orElseThrow(()-> new UsernameNotFoundException("User not found"));
+                .orElseThrow(()-> new NotFoundException("User ",null));
     }
 
     @Bean
