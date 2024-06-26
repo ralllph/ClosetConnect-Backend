@@ -1,6 +1,9 @@
 package com.capstone.closetconnect.models;
 
 import com.capstone.closetconnect.dtos.ClothingItemsDto;
+import com.capstone.closetconnect.enums.ClothSize;
+import com.capstone.closetconnect.enums.ClothType;
+import com.capstone.closetconnect.enums.Gender;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -29,22 +32,31 @@ public class ClothingItems implements Serializable {
     @Column(name = "photo_url")
     private String photoUrl;
 
-    private String descriptiom;
+    private String description;
 
     @Column(name = "type")
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private ClothType type;
 
     @Column(name = "item_condition")
     private String itemCondition;
 
     @Column(name = "clothing_item_size")
-    private String clothingItemSize;
+    @Enumerated(EnumType.STRING)
+    private ClothSize clothingItemSize;
 
     @Column(name = "status")
     private String status = "AVAILABLE";
 
     @Column(name = "source")
     private String source;
+
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "gender")
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     @OneToMany(mappedBy = "clothingItems" ,fetch = FetchType.LAZY, cascade =  CascadeType.ALL)
     @JsonIgnore
@@ -61,15 +73,17 @@ public class ClothingItems implements Serializable {
     @CreationTimestamp
     private Timestamp createdAt;
 
-    public static ClothingItemsDto toClothingItemEntity(ClothingItems clothingItems){
+    public  ClothingItemsDto toClothingItemDto(ClothingItems clothingItems){
         ClothingItemsDto clothingItemsDto = new ClothingItemsDto();
-        clothingItemsDto.setPhotoUrl(clothingItemsDto.getPhotoUrl());
-        clothingItemsDto.setDescription(clothingItemsDto.getDescription());
-        clothingItemsDto.setType(clothingItemsDto.getType());
-        clothingItemsDto.setItemCondition(clothingItemsDto.getItemCondition());
-        clothingItemsDto.setClothingItemSize(clothingItemsDto.getClothingItemSize());
-        clothingItemsDto.setStatus(clothingItemsDto.getStatus());
-        clothingItemsDto.setSource(clothingItemsDto.getSource());
+        clothingItemsDto.setPhotoUrl(clothingItems.getPhotoUrl());
+        clothingItemsDto.setDescription(clothingItems.getDescription());
+        clothingItemsDto.setType(clothingItems.getType());
+        clothingItemsDto.setName(clothingItems.getName());
+        clothingItemsDto.setGender(clothingItems.getGender());
+        clothingItemsDto.setItemCondition(clothingItems.getItemCondition());
+        clothingItemsDto.setClothingItemSize(clothingItems.getClothingItemSize());
+        clothingItemsDto.setStatus(clothingItems.getStatus());
+        clothingItemsDto.setSource(clothingItems.getSource());
         return clothingItemsDto;
     }
 
@@ -78,12 +92,12 @@ public class ClothingItems implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ClothingItems that = (ClothingItems) o;
-        return Objects.equals(id, that.id) && Objects.equals(user, that.user) && Objects.equals(photoUrl, that.photoUrl) && Objects.equals(descriptiom, that.descriptiom) && Objects.equals(type, that.type) && Objects.equals(itemCondition, that.itemCondition) && Objects.equals(clothingItemSize, that.clothingItemSize) && Objects.equals(status, that.status) && Objects.equals(source, that.source) && Objects.equals(bids, that.bids) && Objects.equals(donations, that.donations) && Objects.equals(reports, that.reports) && Objects.equals(createdAt, that.createdAt);
+        return Objects.equals(id, that.id) && Objects.equals(user, that.user) && Objects.equals(photoUrl, that.photoUrl) && Objects.equals(description, that.description) && Objects.equals(type, that.type) && Objects.equals(itemCondition, that.itemCondition) && clothingItemSize == that.clothingItemSize && Objects.equals(status, that.status) && Objects.equals(source, that.source) && Objects.equals(name, that.name) && gender == that.gender && Objects.equals(bids, that.bids) && Objects.equals(donations, that.donations) && Objects.equals(reports, that.reports) && Objects.equals(createdAt, that.createdAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, user, photoUrl, descriptiom, type, itemCondition, clothingItemSize, status, source, bids, donations, reports, createdAt);
+        return Objects.hash(id, user, photoUrl, description, type, itemCondition, clothingItemSize, status, source, name, gender, bids, donations, reports, createdAt);
     }
 
     @Override
@@ -92,12 +106,14 @@ public class ClothingItems implements Serializable {
                 "id=" + id +
                 ", user=" + user +
                 ", photoUrl='" + photoUrl + '\'' +
-                ", descriptiom='" + descriptiom + '\'' +
+                ", descriptiom='" + description + '\'' +
                 ", type='" + type + '\'' +
                 ", itemCondition='" + itemCondition + '\'' +
-                ", clothingItemSize='" + clothingItemSize + '\'' +
+                ", clothingItemSize=" + clothingItemSize +
                 ", status='" + status + '\'' +
                 ", source='" + source + '\'' +
+                ", name='" + name + '\'' +
+                ", gender=" + gender +
                 ", bids=" + bids +
                 ", donations=" + donations +
                 ", reports=" + reports +

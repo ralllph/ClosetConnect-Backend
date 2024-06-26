@@ -1,5 +1,8 @@
 package com.capstone.closetconnect.dtos;
 
+import com.capstone.closetconnect.enums.ClothSize;
+import com.capstone.closetconnect.enums.ClothType;
+import com.capstone.closetconnect.enums.Gender;
 import com.capstone.closetconnect.models.ClothingItems;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,20 +21,26 @@ public class ClothingItemsDto {
 
     private String description;
 
-    private String type;
+    private ClothType  type;
 
     private String itemCondition;
 
-    private String clothingItemSize;
+    private ClothSize clothingItemSize;
 
     private String status;
 
     private String source;
 
+    private String name;
+
+    private Gender gender;
+
     public static ClothingItems toClothingItemEntity(ClothingItemsDto clothingItemsDto){
         ClothingItems clothingItem = new ClothingItems();
         clothingItem.setPhotoUrl(clothingItemsDto.getPhotoUrl());
-        clothingItem.setDescriptiom(clothingItemsDto.getDescription());
+        clothingItem.setName(clothingItemsDto.getName());
+        clothingItem.setGender(clothingItemsDto.getGender());
+        clothingItem.setDescription(clothingItemsDto.getDescription());
         clothingItem.setType(clothingItemsDto.getType());
         clothingItem.setItemCondition(clothingItemsDto.getItemCondition());
         clothingItem.setClothingItemSize(clothingItemsDto.getClothingItemSize());
@@ -45,12 +54,12 @@ public class ClothingItemsDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ClothingItemsDto that = (ClothingItemsDto) o;
-        return Objects.equals(photoUrl, that.photoUrl) && Objects.equals(description, that.description) && Objects.equals(type, that.type) && Objects.equals(itemCondition, that.itemCondition) && Objects.equals(clothingItemSize, that.clothingItemSize) && Objects.equals(status, that.status) && Objects.equals(source, that.source);
+        return Objects.equals(photoUrl, that.photoUrl) && Objects.equals(description, that.description) && Objects.equals(type, that.type) && Objects.equals(itemCondition, that.itemCondition) && clothingItemSize == that.clothingItemSize && Objects.equals(status, that.status) && Objects.equals(source, that.source) && Objects.equals(name, that.name) && gender == that.gender;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(photoUrl, description, type, itemCondition, clothingItemSize, status, source);
+        return Objects.hash(photoUrl, description, type, itemCondition, clothingItemSize, status, source, name, gender);
     }
 
     @Override
@@ -60,9 +69,12 @@ public class ClothingItemsDto {
                 ", description='" + description + '\'' +
                 ", type='" + type + '\'' +
                 ", itemCondition='" + itemCondition + '\'' +
-                ", clothingItemSize='" + clothingItemSize + '\'' +
+                ", clothingItemSize=" + clothingItemSize +
                 ", status='" + status + '\'' +
                 ", source='" + source + '\'' +
+                ", name='" + name + '\'' +
+                ", gender=" + gender +
                 '}';
     }
+
 }
