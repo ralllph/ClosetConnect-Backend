@@ -59,6 +59,7 @@ public class CreateUser {
         user.setEmail(userDto.getEmail());
         user.setName(userDto.getName());
         user.setTopSize(userDto.getTopSize());
+        user.setBottomSize(userDto.getBottomSize());
         user.setRole(userDto.getRole());
         user.setGender(userDto.getGender());
         return user;
