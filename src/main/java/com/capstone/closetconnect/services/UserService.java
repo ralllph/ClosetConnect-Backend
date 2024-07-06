@@ -7,4 +7,6 @@ public interface UserService {
 
     UserDetail updateUser(Long userId, UpdateUser user);
 
+    UserDetail getUser(Long userId);
+
 }

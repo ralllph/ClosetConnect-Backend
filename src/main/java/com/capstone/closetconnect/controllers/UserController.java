@@ -24,4 +24,12 @@ public class UserController {
         log.info("Update user request coming in for user with id {} and body{}",id,userDto);
         return new ResponseEntity<>(userService.updateUser(id,userDto), HttpStatus.OK);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDetail>getUser (@PathVariable Long id)
+    {
+        log.info("Retrieve user details request coming in for user with id {}}",id);
+        return new ResponseEntity<>(userService.getUser(id), HttpStatus.OK);
+    }
+
 }

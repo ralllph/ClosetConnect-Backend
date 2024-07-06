@@ -3,6 +3,7 @@ package com.capstone.closetconnect.services;
 import com.capstone.closetconnect.dtos.request.UpdateUser;
 import com.capstone.closetconnect.dtos.response.UserDetail;
 import com.capstone.closetconnect.exceptions.NotFoundException;
+import com.capstone.closetconnect.exceptions.UserAlreadyExistsException;
 import com.capstone.closetconnect.models.User;
 import com.capstone.closetconnect.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +19,20 @@ public class UserServiceImpl implements  UserService{
     public UserDetail updateUser(Long userId, UpdateUser user) {
         User userToBeUpdated = userRepository.findById(userId)
                 .orElseThrow(()-> new NotFoundException("user",userId));
+        userRepository.findByEmail(user.getEmail()).ifPresent(existingUser->
+        {
+            throw new UserAlreadyExistsException(user.getEmail());
+        });
         updateUserEntity(userToBeUpdated, user);
         User updatedUser = userRepository.save(userToBeUpdated);
         return updatedUser.toUserDto(userToBeUpdated);
+    }
+
+    @Override
+    public UserDetail getUser(Long userId) {
+        User userFound = userRepository.findById(userId)
+                .orElseThrow(()-> new NotFoundException("user",userId));
+        return userFound.toUserDto(userFound);
     }
 
     private static void updateUserEntity(User userToBeUpdated, UpdateUser updateDetails){
