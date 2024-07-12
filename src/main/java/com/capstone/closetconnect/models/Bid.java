@@ -26,10 +26,12 @@ public class Bid implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private ClothingItems clothingItems;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private User user;
 
     @Column(name = "bid_amount")
@@ -59,7 +61,6 @@ public class Bid implements Serializable {
     public String toString() {
         return "Bid{" +
                 "id=" + id +
-                ", clothingItems=" + clothingItems +
                 ", user=" + user +
                 ", bidAmount=" + bidAmount +
                 ", bidStatus='" + bidStatus + '\'' +

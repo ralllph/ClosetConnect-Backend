@@ -1,4 +1,4 @@
-package com.capstone.closetconnect.dtos;
+package com.capstone.closetconnect.dtos.response;
 
 import com.capstone.closetconnect.enums.ClothSize;
 import com.capstone.closetconnect.enums.ClothType;
@@ -16,6 +16,8 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ClothingItemsDto {
+
+    private Long id;
 
     private String photoUrl;
 

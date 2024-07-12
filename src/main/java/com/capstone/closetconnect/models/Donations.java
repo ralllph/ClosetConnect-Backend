@@ -26,11 +26,12 @@ public class Donations implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @OneToMany(mappedBy = "donations")
+    @OneToMany(mappedBy = "donations",fetch = FetchType.LAZY)
     @JsonIgnore
     private List<ClothingItems> clothingItems;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private User user;
 
     @Column(name = "claimed_by")
@@ -60,7 +61,6 @@ public class Donations implements Serializable {
     public String toString() {
         return "Donations{" +
                 "id=" + id +
-                ", clothingItems=" + clothingItems +
                 ", user=" + user +
                 ", claimedBy='" + claimedBy + '\'' +
                 ", createdAt=" + createdAt +

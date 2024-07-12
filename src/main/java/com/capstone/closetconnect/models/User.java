@@ -5,6 +5,7 @@ import com.capstone.closetconnect.dtos.response.UserDetail;
 import com.capstone.closetconnect.enums.ClothSize;
 import com.capstone.closetconnect.enums.Gender;
 import com.capstone.closetconnect.enums.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -55,6 +56,7 @@ public class User implements Serializable, UserDetails {
     private List<ClothingItems> clothingItems;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Donations> donations;
 
     @Column(nullable = false)
@@ -66,24 +68,31 @@ public class User implements Serializable, UserDetails {
     private Role role = Role.USER;
 
     @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+    @JsonIgnore
     private Set<Message> sentMessages;
 
     @OneToMany(mappedBy = "receiver", fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+    @JsonIgnore
     private Set<Message> receivedMessages;
 
    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+   @JsonIgnore
     private List<Bid> bids;
 
     @OneToMany(mappedBy = "ratedBy", fetch = FetchType.LAZY, cascade =  CascadeType.ALL)
+    @JsonIgnore
     private List<Ratings> ratingsGiven;
 
     @OneToMany(mappedBy = "ratedUser", fetch = FetchType.LAZY, cascade =  CascadeType.ALL)
+    @JsonIgnore
     private List<Ratings> ratingsReceived;
 
     @OneToMany(mappedBy = "reportedBy", fetch = FetchType.LAZY, cascade =  CascadeType.ALL)
+    @JsonIgnore
     private List<Report> reportsSent;
 
     @OneToMany(mappedBy = "reportedUser", fetch = FetchType.LAZY, cascade =  CascadeType.ALL)
+    @JsonIgnore
     private List<Report> reportsReceived;
 
 
@@ -122,17 +131,9 @@ public class User implements Serializable, UserDetails {
                 ", name='" + name + '\'' +
                 ", topSize=" + topSize +
                 ", bottomSize=" + bottomSize +
-                ", clothingItems=" + clothingItems +
-                ", donations=" + donations +
                 ", gender=" + gender +
                 ", role=" + role +
-                ", sentMessages=" + sentMessages +
-                ", receivedMessages=" + receivedMessages +
                 ", bids=" + bids +
-                ", ratingsGiven=" + ratingsGiven +
-                ", ratingsReceived=" + ratingsReceived +
-                ", reportsSent=" + reportsSent +
-                ", reportsReceived=" + reportsReceived +
                 '}';
     }
 

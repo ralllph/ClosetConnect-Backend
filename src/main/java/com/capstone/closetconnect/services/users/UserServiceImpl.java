@@ -1,4 +1,4 @@
-package com.capstone.closetconnect.services;
+package com.capstone.closetconnect.services.users;
 
 import com.capstone.closetconnect.dtos.request.UpdateUser;
 import com.capstone.closetconnect.dtos.response.UserDetail;
@@ -6,12 +6,13 @@ import com.capstone.closetconnect.exceptions.NotFoundException;
 import com.capstone.closetconnect.exceptions.UserAlreadyExistsException;
 import com.capstone.closetconnect.models.User;
 import com.capstone.closetconnect.repositories.UserRepository;
+import com.capstone.closetconnect.services.users.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements  UserService{
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 

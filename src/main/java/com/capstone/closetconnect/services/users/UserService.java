@@ -1,4 +1,4 @@
-package com.capstone.closetconnect.services;
+package com.capstone.closetconnect.services.users;
 
 import com.capstone.closetconnect.dtos.request.UpdateUser;
 import com.capstone.closetconnect.dtos.response.UserDetail;

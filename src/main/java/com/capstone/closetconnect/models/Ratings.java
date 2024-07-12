@@ -1,5 +1,6 @@
 package com.capstone.closetconnect.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,12 +24,14 @@ public class Ratings implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "rated_by")
+    @JsonIgnore
     private User ratedBy;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "rated_user")
+    @JsonIgnore
     private User ratedUser;
 
     @Column(name = "rating_value")
@@ -58,9 +61,7 @@ public class Ratings implements Serializable {
         return "Ratings{" +
                 "id=" + id +
                 ", ratedBy=" + ratedBy +
-                ", ratedUser=" + ratedUser +
                 ", ratingValue=" + ratingValue +
-                ", review='" + review + '\'' +
                 ", createdAt=" + createdAt +
                 '}';
     }
