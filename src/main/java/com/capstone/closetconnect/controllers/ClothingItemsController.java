@@ -1,7 +1,9 @@
 package com.capstone.closetconnect.controllers;
 
 import com.capstone.closetconnect.dtos.request.ClothingItem;
+import com.capstone.closetconnect.dtos.response.AllClothingItems;
 import com.capstone.closetconnect.dtos.response.ClothingItemsDto;
+import com.capstone.closetconnect.dtos.response.DeleteSuccess;
 import com.capstone.closetconnect.enums.ClothType;
 import com.capstone.closetconnect.enums.Gender;
 import com.capstone.closetconnect.exceptions.PaginationException;
@@ -72,10 +74,20 @@ public class ClothingItemsController {
              @RequestParam(defaultValue = "0") int page,
              @RequestParam(defaultValue = "10") int size
             ){
-        if(page<0 || size <1)
-            throw new PaginationException();
+        checkPagination(page,size);
         Pageable pageable = PageRequest.of(page, size);
         return new ResponseEntity<>(clothingItemsService.getAllUserClothingItems(userId,pageable)
+                , HttpStatus.OK);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<Page<AllClothingItems>> getAllClothingItems
+            (@RequestParam(defaultValue = "0") int page,
+             @RequestParam(defaultValue = "10") int size
+            ){
+        checkPagination(page,size);
+        Pageable pageable = PageRequest.of(page, size);
+        return new ResponseEntity<>(clothingItemsService.getAllClothingItemsWithUserInfo(pageable)
                 , HttpStatus.OK);
     }
 
@@ -97,4 +109,17 @@ public class ClothingItemsController {
                 updateClothingItem(clothId,userId,clothingItem),
                 HttpStatus.OK);
     }
+
+    @DeleteMapping("/{clothId}/user/{userId}")
+    public ResponseEntity<DeleteSuccess> deleteClothingItem(
+            @PathVariable("clothId") Long clothId,
+            @PathVariable("userId") Long userId){
+        return new ResponseEntity<>(clothingItemsService.deleteClothingItem(clothId,userId),HttpStatus.OK);
+    }
+
+    private void checkPagination(int pageNumber, int pageSize){
+        if(pageNumber<0 || pageSize <1)
+            throw new PaginationException();
+    }
+
 }

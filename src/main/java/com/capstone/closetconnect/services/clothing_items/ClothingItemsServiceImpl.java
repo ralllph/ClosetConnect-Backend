@@ -1,7 +1,9 @@
 package com.capstone.closetconnect.services.clothing_items;
 
 import com.capstone.closetconnect.dtos.request.ClothingItem;
+import com.capstone.closetconnect.dtos.response.AllClothingItems;
 import com.capstone.closetconnect.dtos.response.ClothingItemsDto;
+import com.capstone.closetconnect.dtos.response.DeleteSuccess;
 import com.capstone.closetconnect.enums.ClothType;
 import com.capstone.closetconnect.enums.Gender;
 import com.capstone.closetconnect.exceptions.*;
@@ -139,6 +141,26 @@ public class ClothingItemsServiceImpl implements ClothingItemsService {
                 .collect(Collectors.toList());
         List<ClothingItemsDto> clothingItemsDtos = clothingItemsListToDto(userClothingItems);
         return new PageImpl<>(clothingItemsDtos,pageable,userPage.getTotalElements());
+    }
+
+    @Override
+    public Page<AllClothingItems> getAllClothingItemsWithUserInfo(Pageable pageable) {
+        return clothingItemsRepository
+                .getAllClothingItemsWithUserInfo(pageable);
+    }
+
+    @Override
+    public DeleteSuccess deleteClothingItem(Long clothId, Long userId) {
+        User user= checkUserExist(userId);
+        ClothingItems clothToBeDeleted = checkClothItemExists(clothId);
+        //check if user owns cloth
+        if(!clothToBeDeleted.getUser().getId().equals(user.getId())){
+            throw new NotAssociatedException("cloth","user");
+        }
+
+        clothingItemsRepository.deleteClothingItem(clothId);
+
+        return new DeleteSuccess();
     }
 
 
