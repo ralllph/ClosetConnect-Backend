@@ -1,6 +1,6 @@
 package com.capstone.closetconnect.models;
 
-import com.capstone.closetconnect.dtos.ClothingItemsDto;
+import com.capstone.closetconnect.dtos.response.ClothingItemsDto;
 import com.capstone.closetconnect.enums.ClothSize;
 import com.capstone.closetconnect.enums.ClothType;
 import com.capstone.closetconnect.enums.Gender;
@@ -26,7 +26,8 @@ public class ClothingItems implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private User user;
 
     @Column(name = "photo_url")
@@ -63,6 +64,7 @@ public class ClothingItems implements Serializable {
     private List<Bid> bids;
 
     @ManyToOne
+    @JsonIgnore
     private Donations donations;
 
     @OneToMany(mappedBy = "clothingItem" ,fetch = FetchType.LAZY, cascade =  CascadeType.ALL)
@@ -73,8 +75,9 @@ public class ClothingItems implements Serializable {
     @CreationTimestamp
     private Timestamp createdAt;
 
-    public  ClothingItemsDto toClothingItemDto(ClothingItems clothingItems){
+    public static ClothingItemsDto toClothingItemDto(ClothingItems clothingItems){
         ClothingItemsDto clothingItemsDto = new ClothingItemsDto();
+        clothingItemsDto.setId(clothingItems.getId());
         clothingItemsDto.setPhotoUrl(clothingItems.getPhotoUrl());
         clothingItemsDto.setDescription(clothingItems.getDescription());
         clothingItemsDto.setType(clothingItems.getType());
@@ -104,7 +107,6 @@ public class ClothingItems implements Serializable {
     public String toString() {
         return "ClothingItems{" +
                 "id=" + id +
-                ", user=" + user +
                 ", photoUrl='" + photoUrl + '\'' +
                 ", descriptiom='" + description + '\'' +
                 ", type='" + type + '\'' +
@@ -114,9 +116,6 @@ public class ClothingItems implements Serializable {
                 ", source='" + source + '\'' +
                 ", name='" + name + '\'' +
                 ", gender=" + gender +
-                ", bids=" + bids +
-                ", donations=" + donations +
-                ", reports=" + reports +
                 ", createdAt=" + createdAt +
                 '}';
     }

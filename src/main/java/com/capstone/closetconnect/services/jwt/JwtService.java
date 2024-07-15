@@ -1,4 +1,4 @@
-package com.capstone.closetconnect.services;
+package com.capstone.closetconnect.services.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

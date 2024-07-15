@@ -1,6 +1,6 @@
 package com.capstone.closetconnect.configs;
 
-import com.capstone.closetconnect.services.JwtService;
+import com.capstone.closetconnect.services.jwt.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

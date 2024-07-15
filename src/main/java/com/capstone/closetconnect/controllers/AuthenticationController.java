@@ -3,7 +3,7 @@ package com.capstone.closetconnect.controllers;
 import com.capstone.closetconnect.dtos.request.AuthenticateUser;
 import com.capstone.closetconnect.dtos.request.CreateUser;
 import com.capstone.closetconnect.dtos.response.AuthenticationResponse;
-import com.capstone.closetconnect.services.AuthenticationService;
+import com.capstone.closetconnect.services.auth.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

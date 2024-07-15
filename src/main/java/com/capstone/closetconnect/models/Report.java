@@ -1,5 +1,6 @@
 package com.capstone.closetconnect.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,13 +25,16 @@ public class Report  implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private User reportedBy;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private User reportedUser;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private ClothingItems clothingItem;
 
     private String reason;
@@ -61,9 +65,6 @@ public class Report  implements Serializable {
     public String toString() {
         return "Report{" +
                 "id=" + id +
-                ", reportedBy=" + reportedBy +
-                ", reportedUser=" + reportedUser +
-                ", clothingItem=" + clothingItem +
                 ", reason='" + reason + '\'' +
                 ", status='" + status + '\'' +
                 ", createdAt=" + createdAt +

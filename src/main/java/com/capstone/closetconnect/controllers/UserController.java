@@ -2,7 +2,7 @@ package com.capstone.closetconnect.controllers;
 
 import com.capstone.closetconnect.dtos.request.UpdateUser;
 import com.capstone.closetconnect.dtos.response.UserDetail;
-import com.capstone.closetconnect.services.UserService;
+import com.capstone.closetconnect.services.users.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

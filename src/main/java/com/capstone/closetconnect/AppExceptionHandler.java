@@ -37,22 +37,53 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<Object> AlreadyExistsException(UserAlreadyExistsException exception){
         ErrorResponse error = new ErrorResponse(Collections.singletonList(exception.getLocalizedMessage()));
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<Object> NotFoundException(NotFoundException exception){
         ErrorResponse error = new ErrorResponse(Collections.singletonList(exception.getLocalizedMessage()));
-        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(ImageTooLargeException.class)
+    public ResponseEntity<Object> imageTooLargeException(ImageTooLargeException exception){
+        ErrorResponse error = new ErrorResponse(Collections.singletonList(exception.getLocalizedMessage()));
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidImageException.class)
+    public ResponseEntity<Object> invalidImageException(InvalidImageException exception){
+        ErrorResponse error = new ErrorResponse(Collections.singletonList(exception.getLocalizedMessage()));
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotImageException.class)
+    public ResponseEntity<Object> notImageException(NotImageException exception){
+        ErrorResponse error = new ErrorResponse(Collections.singletonList(exception.getLocalizedMessage()));
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(LoginFailedException.class)
-    public ResponseEntity<Object> NotFoundException(LoginFailedException exception){
+    public ResponseEntity<Object>  loginFailedException(LoginFailedException exception){
         ErrorResponse error = new ErrorResponse(Collections.singletonList(exception.getLocalizedMessage()));
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(MissingParameterException.class)
     public ResponseEntity<Object> MissingParameterException(MissingParameterException exception){
+        ErrorResponse error = new ErrorResponse(Collections.singletonList(exception.getLocalizedMessage()));
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotAssociatedException.class)
+    public ResponseEntity<Object> wrongAssociationException(NotAssociatedException exception){
+        ErrorResponse error = new ErrorResponse(Collections.singletonList(exception.getLocalizedMessage()));
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(PaginationException.class)
+    public ResponseEntity<Object> paginationException(PaginationException exception){
         ErrorResponse error = new ErrorResponse(Collections.singletonList(exception.getLocalizedMessage()));
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }

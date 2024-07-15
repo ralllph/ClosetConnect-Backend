@@ -1,4 +1,4 @@
-package com.capstone.closetconnect.services;
+package com.capstone.closetconnect.services.auth;
 
 import com.capstone.closetconnect.dtos.request.AuthenticateUser;
 import com.capstone.closetconnect.dtos.request.CreateUser;
@@ -7,6 +7,7 @@ import com.capstone.closetconnect.exceptions.LoginFailedException;
 import com.capstone.closetconnect.exceptions.UserAlreadyExistsException;
 import com.capstone.closetconnect.models.User;
 import com.capstone.closetconnect.repositories.UserRepository;
+import com.capstone.closetconnect.services.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
