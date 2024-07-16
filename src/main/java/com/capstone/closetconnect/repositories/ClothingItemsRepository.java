@@ -1,6 +1,6 @@
 package com.capstone.closetconnect.repositories;
 
-import com.capstone.closetconnect.dtos.response.AllClothingItems;
+import com.capstone.closetconnect.dtos.response.ClothDetailsWithUser;
 import com.capstone.closetconnect.enums.ClothType;
 import com.capstone.closetconnect.enums.Gender;
 import com.capstone.closetconnect.models.ClothingItems;
@@ -13,6 +13,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 
 @Repository
 public interface ClothingItemsRepository extends JpaRepository<ClothingItems, Long> {
@@ -23,11 +25,17 @@ public interface ClothingItemsRepository extends JpaRepository<ClothingItems, Lo
 
     Page<ClothingItems> findByUserIdAndGender(Long userId, Gender gender, Pageable pageable);
 
-    @Query("SELECT new com.capstone.closetconnect.dtos.response.AllClothingItems(" +
+    @Query("SELECT new com.capstone.closetconnect.dtos.response.ClothDetailsWithUser(" +
             "ci.id, ci.name, ci.description, ci.photoUrl, ci.status, " +
             "ci.user.id, ci.user.name AS userFullName, ci.createdAt) " +
             "FROM ClothingItems ci JOIN ci.user ORDER BY ci.createdAt DESC")
-    Page<AllClothingItems> getAllClothingItemsWithUserInfo(Pageable pageable);
+    Page<ClothDetailsWithUser> getAllClothingItemsWithUserInfo(Pageable pageable);
+
+    @Query("SELECT new com.capstone.closetconnect.dtos.response.ClothDetailsWithUser(" +
+            "ci.id, ci.name, ci.description, ci.photoUrl, ci.status, " +
+            "ci.user.id, ci.user.name AS userFullName, ci.createdAt) " +
+            "FROM ClothingItems ci JOIN ci.user WHERE ci.id = :clothId ORDER BY ci.createdAt DESC")
+    Optional<ClothDetailsWithUser> getClothingItemWithUserDetails(@Param("clothId") Long clothId);
 
     @Modifying
     @Transactional

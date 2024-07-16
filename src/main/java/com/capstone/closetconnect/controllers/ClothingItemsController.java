@@ -1,7 +1,7 @@
 package com.capstone.closetconnect.controllers;
 
 import com.capstone.closetconnect.dtos.request.ClothingItem;
-import com.capstone.closetconnect.dtos.response.AllClothingItems;
+import com.capstone.closetconnect.dtos.response.ClothDetailsWithUser;
 import com.capstone.closetconnect.dtos.response.ClothingItemsDto;
 import com.capstone.closetconnect.dtos.response.DeleteSuccess;
 import com.capstone.closetconnect.enums.ClothType;
@@ -19,8 +19,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -81,13 +79,19 @@ public class ClothingItemsController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<Page<AllClothingItems>> getAllClothingItems
+    public ResponseEntity<Page<ClothDetailsWithUser>> getAllClothingItems
             (@RequestParam(defaultValue = "0") int page,
              @RequestParam(defaultValue = "10") int size
             ){
         checkPagination(page,size);
         Pageable pageable = PageRequest.of(page, size);
         return new ResponseEntity<>(clothingItemsService.getAllClothingItemsWithUserInfo(pageable)
+                , HttpStatus.OK);
+    }
+
+    @GetMapping("/cloth/{clothId}")
+    public ResponseEntity<ClothDetailsWithUser> getClothingItem(@PathVariable("clothId" ) Long clothId){
+        return new ResponseEntity<>(clothingItemsService.getClothingItem(clothId)
                 , HttpStatus.OK);
     }
 
