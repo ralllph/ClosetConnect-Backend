@@ -1,7 +1,7 @@
 package com.capstone.closetconnect.services.clothing_items;
 
 import com.capstone.closetconnect.dtos.request.ClothingItem;
-import com.capstone.closetconnect.dtos.response.AllClothingItems;
+import com.capstone.closetconnect.dtos.response.ClothDetailsWithUser;
 import com.capstone.closetconnect.dtos.response.ClothingItemsDto;
 import com.capstone.closetconnect.dtos.response.DeleteSuccess;
 import com.capstone.closetconnect.enums.ClothType;
@@ -17,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -133,6 +132,13 @@ public class ClothingItemsServiceImpl implements ClothingItemsService {
     }
 
     @Override
+    public ClothDetailsWithUser getClothingItem(Long clothId) {
+        checkClothItemExists(clothId);
+        return clothingItemsRepository.getClothingItemWithUserDetails(clothId)
+                .orElseThrow(() -> new NotFoundException("cloth", clothId));
+    }
+
+    @Override
     public Page<ClothingItemsDto> getAllUserClothingItems(Long userId, Pageable pageable) {
         checkUserExist(userId);
         Page<User> userPage = userRepository.findUserWithClothingItems(userId,pageable);
@@ -144,7 +150,7 @@ public class ClothingItemsServiceImpl implements ClothingItemsService {
     }
 
     @Override
-    public Page<AllClothingItems> getAllClothingItemsWithUserInfo(Pageable pageable) {
+    public Page<ClothDetailsWithUser> getAllClothingItemsWithUserInfo(Pageable pageable) {
         return clothingItemsRepository
                 .getAllClothingItemsWithUserInfo(pageable);
     }

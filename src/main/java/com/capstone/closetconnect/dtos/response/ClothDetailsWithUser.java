@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 
 @Data
 @NoArgsConstructor
-public class AllClothingItems {
+public class ClothDetailsWithUser {
 
     private Long id;
 
@@ -28,8 +28,8 @@ public class AllClothingItems {
 
     private LocalDate createdAt;
 
-    public AllClothingItems(Long id, String name, String description, String photoUrl, String status, Long userId,
-                            String userFullName, Timestamp createdAt) {
+    public ClothDetailsWithUser(Long id, String name, String description, String photoUrl, String status, Long userId,
+                                String userFullName, Timestamp createdAt) {
         this.id = id;
         this.name = name;
         this.description = description;
