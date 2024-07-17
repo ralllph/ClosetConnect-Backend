@@ -3,6 +3,7 @@ package com.capstone.closetconnect.dtos.response;
 import com.capstone.closetconnect.enums.ClothSize;
 import com.capstone.closetconnect.enums.ClothType;
 import com.capstone.closetconnect.enums.Gender;
+import com.capstone.closetconnect.enums.Status;
 import com.capstone.closetconnect.models.ClothingItems;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,7 +30,7 @@ public class ClothingItemsDto {
 
     private ClothSize clothingItemSize;
 
-    private String status;
+    private Status status;
 
     private String source;
 

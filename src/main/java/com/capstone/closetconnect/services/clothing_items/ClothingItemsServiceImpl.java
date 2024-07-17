@@ -190,6 +190,7 @@ public class ClothingItemsServiceImpl implements ClothingItemsService {
         clothToBeUpdated.setGender(newClothDetails.getGender());
         clothToBeUpdated.setDescription(newClothDetails.getDescription());
         clothToBeUpdated.setType(newClothDetails.getType());
+        clothToBeUpdated.setStatus(newClothDetails.getStatus());
         clothToBeUpdated.setItemCondition(newClothDetails.getItemCondition());
         clothToBeUpdated.setClothingItemSize(newClothDetails.getClothingItemSize());
         clothToBeUpdated.setSource(newClothDetails.getSource());
