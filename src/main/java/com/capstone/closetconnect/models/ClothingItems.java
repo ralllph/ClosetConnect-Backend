@@ -73,6 +73,15 @@ public class ClothingItems implements Serializable {
     @JsonIgnore
     private List<Report> reports;
 
+    @OneToMany(mappedBy = "offeredItem", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Trades> offeredTrades;
+
+    @OneToMany(mappedBy = "requestedItem", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Trades> requestedTrades;
+
+
     @Column(name = "created_at", updatable = false)
     @CreationTimestamp
     private Timestamp createdAt;
