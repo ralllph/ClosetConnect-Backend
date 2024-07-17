@@ -28,7 +28,7 @@ public interface ClothingItemsRepository extends JpaRepository<ClothingItems, Lo
     @Query("SELECT new com.capstone.closetconnect.dtos.response.ClothDetailsWithUser(" +
             "ci.id, ci.name, ci.description, ci.photoUrl, ci.status, " +
             "ci.user.id, ci.user.name AS userFullName, ci.createdAt) " +
-            "FROM ClothingItems ci JOIN ci.user ORDER BY ci.createdAt DESC")
+            "FROM ClothingItems ci JOIN ci.user WHERE ci.status='AVAILABLE' ORDER BY ci.createdAt DESC")
     Page<ClothDetailsWithUser> getAllClothingItemsWithUserInfo(Pageable pageable);
 
     @Query("SELECT new com.capstone.closetconnect.dtos.response.ClothDetailsWithUser(" +
