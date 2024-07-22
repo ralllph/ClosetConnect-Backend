@@ -34,4 +34,5 @@
     <include file="scripts/18_ALTER_DONATIONS_TABLE_ADD_USER.sql" relativeToChangelogFile="true" author="Izueke Raphael" />
     <include file="scripts/19_ALTER_DONATIONS_TABLE_ADD_FK_CONSTRAINT_USER.sql" relativeToChangelogFile="true" author="Izueke Raphael" />
     <include file="scripts/20_ALTER_TRADES_TABLE_NEW_STRUCTURE.sql" relativeToChangelogFile="true" author="Izueke Raphael" />
+    <include file="scripts/21_ALTER_TRADES_TABLE_ADD_FIELDS.sql" relativeToChangelogFile="true" author="Izueke Raphael" />
 </databaseChangeLog>

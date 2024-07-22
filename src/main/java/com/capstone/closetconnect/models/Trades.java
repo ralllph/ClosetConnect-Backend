@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Builder
@@ -41,6 +42,12 @@ public class Trades {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private TradeStatus status;
+
+    @Column(name = "exchange_location")
+    private String exchangeLocation;
+
+    @Column(name = "exchange_date")
+    private LocalDateTime exchangeDate;
 
     @Column(name = "created_at", updatable = false)
     @CreationTimestamp
