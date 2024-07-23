@@ -10,6 +10,7 @@ import com.capstone.closetconnect.models.User;
 import com.capstone.closetconnect.repositories.ClothingItemsRepository;
 import com.capstone.closetconnect.repositories.UserRepository;
 import com.capstone.closetconnect.services.clothing_items.ClothingItemsService;
+import com.capstone.closetconnect.services.notifications.NotifService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,8 @@ public class TradeServiceImpl implements  TradesService{
 
     private final ClothingItemsService clothingItemsService;
 
+    private final NotifService notifService;
+
     @Override
     public ActionSuccess requestTrade(RequestTrade tradeRequest) {
 
@@ -34,8 +37,8 @@ public class TradeServiceImpl implements  TradesService{
         Long userToTradeWithId = tradeRequest.getUserToTradeWithId();
         ClothingItems tradeInitiatorCloth = clothingItemsService.checkClothItemExists(tradeInitiatorClothId);
         ClothingItems clothRequested = clothingItemsService.checkClothItemExists(itemRequestedId);
-        checkUserExist(tradeRequest.getTradeInitiatorId());
-        checkUserExist(tradeRequest.getUserToTradeWithId());
+        User tradeInitiator = checkUserExist(tradeRequest.getTradeInitiatorId());
+        User userToTradeWith = checkUserExist(tradeRequest.getUserToTradeWithId());
 
         //check both trading parties own respective items
         if(!tradeInitiatorCloth.getUser().getId().equals(tradeInitiatorId)
@@ -48,8 +51,18 @@ public class TradeServiceImpl implements  TradesService{
         if(userToTradeWithId.equals(tradeInitiatorId))
             throw new SelfTradeException();
 
-        //TODO: send async notification to receiver
-
+        //TODO: send async email notification to receiver
+        //TODO: send confirmation email notification to sender
+        //TODO: save in app notification for receiver
+        String traderInitiatorName = tradeInitiator.getName();
+        String tradeInitiatorClothName = tradeInitiatorCloth.getName();
+        String clothRequestedName  =  clothRequested.getName();
+        String notifiMessageToReceiver = createNotifiMessage(traderInitiatorName,
+                tradeInitiatorClothName, clothRequestedName);
+        notifService.createNotification(userToTradeWith, notifiMessageToReceiver);
+        //TODO: client side to link to trades page for that user when a particular notification is clcked
+        //TODO: if user accepts/rejects send async email notification to sender and inapp notif to sender
+        //TODO: create service for get notifications based on user
         ActionSuccess successMessage = new ActionSuccess();
         successMessage.setMessage("Trade request Sent Successfully");
         return successMessage;
@@ -62,6 +75,9 @@ public class TradeServiceImpl implements  TradesService{
                 .orElseThrow(()-> new NotFoundException("user", userId));
     }
 
-
+    private String createNotifiMessage(String tradeInitiator, String tradeInitiatorCloth, String clothRequested){
+        return tradeInitiator + " " + "is trying to trade "+ " " + tradeInitiatorCloth + " " + "for your"
+                + " " + clothRequested;
+    }
 
 }

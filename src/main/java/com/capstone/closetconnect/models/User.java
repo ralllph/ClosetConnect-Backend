@@ -56,6 +56,9 @@ public class User implements Serializable, UserDetails {
     private List<ClothingItems> clothingItems;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+    private List<Notifications> notifications;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY , cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Donations> donations;
 
