@@ -49,7 +49,10 @@ public class TradeServiceImpl implements  TradesService{
             throw new SelfTradeException();
 
         //TODO: send async notification to receiver
-        return null;
+
+        ActionSuccess successMessage = new ActionSuccess();
+        successMessage.setMessage("Trade request Sent Successfully");
+        return successMessage;
     }
     public void tradeCloth(RequestTrade tradeRequest){
     }
