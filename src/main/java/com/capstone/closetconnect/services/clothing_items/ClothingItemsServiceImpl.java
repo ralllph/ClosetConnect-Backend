@@ -3,7 +3,7 @@ package com.capstone.closetconnect.services.clothing_items;
 import com.capstone.closetconnect.dtos.request.ClothingItem;
 import com.capstone.closetconnect.dtos.response.ClothDetailsWithUser;
 import com.capstone.closetconnect.dtos.response.ClothingItemsDto;
-import com.capstone.closetconnect.dtos.response.DeleteSuccess;
+import com.capstone.closetconnect.dtos.response.ActionSuccess;
 import com.capstone.closetconnect.enums.ClothType;
 import com.capstone.closetconnect.enums.Gender;
 import com.capstone.closetconnect.exceptions.*;
@@ -156,7 +156,7 @@ public class ClothingItemsServiceImpl implements ClothingItemsService {
     }
 
     @Override
-    public DeleteSuccess deleteClothingItem(Long clothId, Long userId) {
+    public ActionSuccess deleteClothingItem(Long clothId, Long userId) {
         User user= checkUserExist(userId);
         ClothingItems clothToBeDeleted = checkClothItemExists(clothId);
         //check if user owns cloth
@@ -166,7 +166,7 @@ public class ClothingItemsServiceImpl implements ClothingItemsService {
 
         clothingItemsRepository.deleteClothingItem(clothId);
 
-        return new DeleteSuccess();
+        return new ActionSuccess();
     }
 
 
@@ -179,7 +179,8 @@ public class ClothingItemsServiceImpl implements ClothingItemsService {
                 .orElseThrow(()-> new NotFoundException("user", userId));
     }
 
-    private ClothingItems checkClothItemExists(Long clothId){
+    @Override
+    public ClothingItems checkClothItemExists(Long clothId){
         return clothingItemsRepository.findById(clothId)
                 .orElseThrow(()-> new NotFoundException("cloth", clothId));
     }

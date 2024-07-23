@@ -82,6 +82,12 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(SelfTradeException.class)
+    public ResponseEntity<Object> selfTradeException(SelfTradeException exception){
+        ErrorResponse error = new ErrorResponse(Collections.singletonList(exception.getLocalizedMessage()));
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler(PaginationException.class)
     public ResponseEntity<Object> paginationException(PaginationException exception){
         ErrorResponse error = new ErrorResponse(Collections.singletonList(exception.getLocalizedMessage()));

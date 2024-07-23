@@ -3,7 +3,7 @@ package com.capstone.closetconnect.controllers;
 import com.capstone.closetconnect.dtos.request.ClothingItem;
 import com.capstone.closetconnect.dtos.response.ClothDetailsWithUser;
 import com.capstone.closetconnect.dtos.response.ClothingItemsDto;
-import com.capstone.closetconnect.dtos.response.DeleteSuccess;
+import com.capstone.closetconnect.dtos.response.ActionSuccess;
 import com.capstone.closetconnect.enums.ClothType;
 import com.capstone.closetconnect.enums.Gender;
 import com.capstone.closetconnect.exceptions.PaginationException;
@@ -115,7 +115,7 @@ public class ClothingItemsController {
     }
 
     @DeleteMapping("/{clothId}/user/{userId}")
-    public ResponseEntity<DeleteSuccess> deleteClothingItem(
+    public ResponseEntity<ActionSuccess> deleteClothingItem(
             @PathVariable("clothId") Long clothId,
             @PathVariable("userId") Long userId){
         return new ResponseEntity<>(clothingItemsService.deleteClothingItem(clothId,userId),HttpStatus.OK);
