@@ -166,7 +166,7 @@ public class ClothingItemsServiceImpl implements ClothingItemsService {
 
         clothingItemsRepository.deleteClothingItem(clothId);
 
-        return new ActionSuccess();
+        return new ActionSuccess("Clothing item deleted successfuly");
     }
 
 

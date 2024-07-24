@@ -37,53 +37,96 @@ public class TradeServiceImpl implements  TradesService{
     @Override
     public ActionSuccess requestTrade(RequestTrade tradeRequest) {
 
-        long itemRequestedId = tradeRequest.getItemRequestedId();
-        Long tradeInitiatorId =tradeRequest.getTradeInitiatorId();
+        Long itemRequestedId = tradeRequest.getItemRequestedId();
+        Long tradeInitiatorId = tradeRequest.getTradeInitiatorId();
         Long tradeInitiatorClothId = tradeRequest.getInitiatorItemId();
         Long userToTradeWithId = tradeRequest.getUserToTradeWithId();
-        ClothingItems tradeInitiatorCloth = clothingItemsService.checkClothItemExists(tradeInitiatorClothId);
-        ClothingItems clothRequested = clothingItemsService.checkClothItemExists(itemRequestedId);
-        User tradeInitiator = checkUserExist(tradeRequest.getTradeInitiatorId());
-        User userToTradeWith = checkUserExist(tradeRequest.getUserToTradeWithId());
 
-        //check both trading parties own respective items
-        if(!tradeInitiatorCloth.getUser().getId().equals(tradeInitiatorId)
-                || !clothRequested.getUser().getId().equals(userToTradeWithId)
-        ){
+        // Fetch required entities
+        ClothingItems tradeInitiatorCloth = clothingItemsService
+                .checkClothItemExists(tradeInitiatorClothId);
+        ClothingItems clothRequested = clothingItemsService
+                .checkClothItemExists(itemRequestedId);
+        User tradeInitiator = checkUserExist(tradeInitiatorId);
+        User userToTradeWith = checkUserExist(userToTradeWithId);
+
+        // Validate ownership and trade conditions
+        validateTradeConditions(tradeInitiatorCloth, tradeInitiatorId,
+                clothRequested,
+                userToTradeWithId);
+
+        // Prepare notifications and emails
+        String notificationMessage = prepareNotificationMessage(tradeInitiator,
+                tradeInitiatorCloth,
+                clothRequested);
+        prepareAndSendEmails(tradeInitiator, userToTradeWith, notificationMessage);
+
+        // TODO: Create new trade object and update respective entities
+        // TODO: Save in-app notification for receiver
+        // TODO: Mark notification as read if user clicks
+        // TODO: Create service for getting notifications based on user
+
+        // TODO: Client side to link to trades page for that user when a particular
+        //  notification is clicked
+        // TODO: If user accepts/rejects send async email notification to sender
+        //  and in-app notification to sender
+        //TODO:  Hide email details in env variable
+        //TODO: perform trade if user accepts
+        // Return success response
+        return new ActionSuccess("Trade request Sent Successfully");
+    }
+
+    private void validateTradeConditions(ClothingItems tradeInitiatorCloth,
+                                         Long tradeInitiatorId,
+                                         ClothingItems clothRequested,
+                                         Long userToTradeWithId) {
+        if (!tradeInitiatorCloth.getUser().getId().equals(tradeInitiatorId) ||
+                !clothRequested.getUser().getId().equals(userToTradeWithId)) {
             throw new NotAssociatedException("clothing item", "user");
         }
-
-        //check user is not attempting self trade
-        if(userToTradeWithId.equals(tradeInitiatorId))
+        if (userToTradeWithId.equals(tradeInitiatorId)) {
             throw new SelfTradeException();
+        }
+    }
 
-        //TODO: send async email notification to receiver
+    private String prepareNotificationMessage(User tradeInitiator,
+                                              ClothingItems tradeInitiatorCloth,
+                                              ClothingItems clothRequested) {
         String traderInitiatorName = tradeInitiator.getName();
         String tradeInitiatorClothName = tradeInitiatorCloth.getName();
-        String clothRequestedName  =  clothRequested.getName();
-        String notifiMessageToReceiver = createNotifiMessage(traderInitiatorName,
-                tradeInitiatorClothName, clothRequestedName);
-        notifService.createNotification(userToTradeWith, notifiMessageToReceiver);
+        String clothRequestedName = clothRequested.getName();
+        return createNotifiMessage(traderInitiatorName, tradeInitiatorClothName,
+                clothRequestedName);
+    }
 
+    private void prepareAndSendEmails(User tradeInitiator, User userToTradeWith,
+                                      String notificationMessage) {
+        String tradeInitiatorEmail = tradeInitiator.getEmail();
+        String tradeInitiatorName = tradeInitiator.getName();
         String userToTradeWithEmail = userToTradeWith.getEmail();
         String userToTradeWithName = userToTradeWith.getName();
         String subject = "Trade Request Notification";
-        Map<String, String> emailVariables = emailService.formEmailBody(userToTradeWithName,
-                notifiMessageToReceiver,subject,"email-template");
-        Map<String, Object> templateVariables = emailService.formTemplateVariables(userToTradeWithName,
-                notifiMessageToReceiver);
-        emailService.sendEmail(userToTradeWithEmail, emailVariables.get("subject"),
-                emailVariables.get("templateName"),templateVariables);
-        //TODO: send confirmation email notification to sender
-        //TODO: save in app notification for receiver
 
-        //TODO: client side to link to trades page for that user when a particular notification is clcked
-        //TODO: if user accepts/rejects send async email notification to sender and inapp notif to sender
-        //TODO: create service for get notifications based on user
-        ActionSuccess successMessage = new ActionSuccess();
-        successMessage.setMessage("Trade request Sent Successfully");
-        return successMessage;
+        Map<String, String> emailVariables = emailService.formEmailBody(userToTradeWithName,
+                notificationMessage,
+                subject, "email-template");
+        Map<String, Object> receiverVariables = emailService
+                .formTemplateVariables(userToTradeWithName,
+                notificationMessage);
+        emailService.sendEmail(userToTradeWithEmail, emailVariables.get("subject"),
+                emailVariables.get("templateName"),
+                receiverVariables);
+
+        String confirmationMessage = "Your trade request to " + userToTradeWithName
+                + " was sent out";
+        Map<String, Object> senderVariables = emailService
+                .formTemplateVariables(tradeInitiatorName,
+                confirmationMessage);
+        emailService.sendEmail(tradeInitiatorEmail, emailVariables.get("subject"),
+                emailVariables.get("templateName"),
+                senderVariables);
     }
+
     public void tradeCloth(RequestTrade tradeRequest){
     }
 
