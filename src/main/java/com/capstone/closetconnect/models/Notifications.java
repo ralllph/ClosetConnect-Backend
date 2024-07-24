@@ -1,5 +1,6 @@
 package com.capstone.closetconnect.models;
 
+import com.capstone.closetconnect.dtos.response.NotifDetails;
 import com.capstone.closetconnect.enums.NotificationStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -11,6 +12,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Objects;
 
 @Entity
@@ -38,6 +40,19 @@ public class Notifications {
     @Column(name = "created_at", updatable = false)
     @CreationTimestamp
     private Timestamp createdAt;
+
+    public static NotifDetails toNotifDto(Notifications notifEntity){
+        NotifDetails notifDto = new NotifDetails();
+        notifDto.setId(notifEntity.getId());
+        notifDto.setMessage(notifEntity.getMessage());
+        notifDto.setDate(notifEntity.getCreatedAt()
+                .toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate());
+        notifDto.setTime(notifEntity.getCreatedAt()
+                .toInstant().atZone(ZoneId.systemDefault()).toLocalTime());
+        return  notifDto;
+    }
 
     @Override
     public boolean equals(Object o) {
