@@ -10,10 +10,14 @@ import com.capstone.closetconnect.models.User;
 import com.capstone.closetconnect.repositories.ClothingItemsRepository;
 import com.capstone.closetconnect.repositories.UserRepository;
 import com.capstone.closetconnect.services.clothing_items.ClothingItemsService;
+import com.capstone.closetconnect.services.email.EmailService;
 import com.capstone.closetconnect.services.notifications.NotifService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -27,6 +31,8 @@ public class TradeServiceImpl implements  TradesService{
     private final ClothingItemsService clothingItemsService;
 
     private final NotifService notifService;
+
+    private final EmailService emailService;
 
     @Override
     public ActionSuccess requestTrade(RequestTrade tradeRequest) {
@@ -52,14 +58,25 @@ public class TradeServiceImpl implements  TradesService{
             throw new SelfTradeException();
 
         //TODO: send async email notification to receiver
-        //TODO: send confirmation email notification to sender
-        //TODO: save in app notification for receiver
         String traderInitiatorName = tradeInitiator.getName();
         String tradeInitiatorClothName = tradeInitiatorCloth.getName();
         String clothRequestedName  =  clothRequested.getName();
         String notifiMessageToReceiver = createNotifiMessage(traderInitiatorName,
                 tradeInitiatorClothName, clothRequestedName);
         notifService.createNotification(userToTradeWith, notifiMessageToReceiver);
+
+        String userToTradeWithEmail = userToTradeWith.getEmail();
+        String userToTradeWithName = userToTradeWith.getName();
+        String subject = "Trade Request Notification";
+        Map<String, String> emailVariables = emailService.formEmailBody(userToTradeWithName,
+                notifiMessageToReceiver,subject,"email-template");
+        Map<String, Object> templateVariables = emailService.formTemplateVariables(userToTradeWithName,
+                notifiMessageToReceiver);
+        emailService.sendEmail(userToTradeWithEmail, emailVariables.get("subject"),
+                emailVariables.get("templateName"),templateVariables);
+        //TODO: send confirmation email notification to sender
+        //TODO: save in app notification for receiver
+
         //TODO: client side to link to trades page for that user when a particular notification is clcked
         //TODO: if user accepts/rejects send async email notification to sender and inapp notif to sender
         //TODO: create service for get notifications based on user
@@ -75,9 +92,12 @@ public class TradeServiceImpl implements  TradesService{
                 .orElseThrow(()-> new NotFoundException("user", userId));
     }
 
-    private String createNotifiMessage(String tradeInitiator, String tradeInitiatorCloth, String clothRequested){
-        return tradeInitiator + " " + "is trying to trade "+ " " + tradeInitiatorCloth + " " + "for your"
+    private String createNotifiMessage(String tradeInitiator, String tradeInitiatorCloth,
+                                       String clothRequested){
+        return tradeInitiator + " " + "wants to trade "+ " " + tradeInitiatorCloth + " "
+                + "for your"
                 + " " + clothRequested;
     }
+
 
 }

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Closet Connect Template</title>
+    <style>
+        body, p, h2, span, a {
+            color: black !important;
+        }
+        .lemon {
+            color: rgb(226,187,91) !important;
+        }
+        .green-link {
+            color: rgb(226,187,91) !important;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<h2>Hello, <span class="lemon" th:text="${name}">User</span></h2>
+<p><span th:text="${content}">Content</span></p>
+<p>View full details  <a href="#" class="green-link">here</a>.</p>
+</body>
+</html>
