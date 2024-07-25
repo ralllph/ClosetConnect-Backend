@@ -37,6 +37,10 @@ public class Notifications {
     @Enumerated(EnumType.STRING)
     private NotificationStatus status = NotificationStatus.UNREAD;
 
+    @OneToOne
+    @JoinColumn(name = "trade_id")
+    private Trades trade;
+
     @Column(name = "created_at", updatable = false)
     @CreationTimestamp
     private Timestamp createdAt;
@@ -51,6 +55,7 @@ public class Notifications {
                 .toLocalDate());
         notifDto.setTime(notifEntity.getCreatedAt()
                 .toInstant().atZone(ZoneId.systemDefault()).toLocalTime());
+        notifDto.setTradeId(notifEntity.getTrade() != null ? notifEntity.getTrade().getId() : null);
         return  notifDto;
     }
 

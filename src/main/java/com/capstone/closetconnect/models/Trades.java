@@ -39,12 +39,15 @@ public class Trades {
     @JoinColumn(name = "requested_item_id", nullable = false)
     private ClothingItems requestedItem;
 
-    @Column(name = "status")
+    @Column(name = "trade_status")
     @Enumerated(EnumType.STRING)
-    private TradeStatus status;
+    private TradeStatus status = TradeStatus.PENDING;
 
     @Column(name = "exchange_location")
     private String exchangeLocation;
+
+    @OneToOne(mappedBy = "trade", cascade = CascadeType.ALL)
+    private Notifications notification;
 
     @Column(name = "exchange_date")
     private LocalDateTime exchangeDate;

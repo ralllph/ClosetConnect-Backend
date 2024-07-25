@@ -6,8 +6,11 @@ import com.capstone.closetconnect.exceptions.NotAssociatedException;
 import com.capstone.closetconnect.exceptions.NotFoundException;
 import com.capstone.closetconnect.exceptions.SelfTradeException;
 import com.capstone.closetconnect.models.ClothingItems;
+import com.capstone.closetconnect.models.Notifications;
+import com.capstone.closetconnect.models.Trades;
 import com.capstone.closetconnect.models.User;
 import com.capstone.closetconnect.repositories.ClothingItemsRepository;
+import com.capstone.closetconnect.repositories.TradeRepository;
 import com.capstone.closetconnect.repositories.UserRepository;
 import com.capstone.closetconnect.services.clothing_items.ClothingItemsService;
 import com.capstone.closetconnect.services.email.EmailService;
@@ -16,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +30,7 @@ public class TradeServiceImpl implements  TradesService{
 
     private final UserRepository userRepo;
 
-    private  final ClothingItemsRepository clothRepo;
+    private  final TradeRepository tradeRepo;
 
     private final ClothingItemsService clothingItemsService;
 
@@ -41,6 +45,9 @@ public class TradeServiceImpl implements  TradesService{
         Long tradeInitiatorId = tradeRequest.getTradeInitiatorId();
         Long tradeInitiatorClothId = tradeRequest.getInitiatorItemId();
         Long userToTradeWithId = tradeRequest.getUserToTradeWithId();
+        String exchangeLocation = tradeRequest.getExchangeLocation();
+        LocalDateTime exchangeDate = tradeRequest.getExchangeDate();
+
 
         // Fetch required entities
         ClothingItems tradeInitiatorCloth = clothingItemsService
@@ -55,16 +62,32 @@ public class TradeServiceImpl implements  TradesService{
                 clothRequested,
                 userToTradeWithId);
 
+        //create notif for receiver
+        String receiverNotifMessage = prepareNotificationMessage(tradeInitiator,
+                tradeInitiatorCloth,
+                clothRequested,exchangeLocation,exchangeDate);
+        Notifications receiverNotif = notifService.
+                createNotification(userToTradeWith,receiverNotifMessage);
+
+
+        //create Trade
+        Trades  newTrade=  createNewTrade(tradeInitiator,tradeInitiatorCloth,
+                userToTradeWith, clothRequested,exchangeLocation,exchangeDate);
+
+        //link notification to trade
+        notifService.linkNotificationToTrade(receiverNotif,newTrade);
         // Prepare notifications and emails
         String notificationMessage = prepareNotificationMessage(tradeInitiator,
                 tradeInitiatorCloth,
-                clothRequested);
+                clothRequested,exchangeLocation,exchangeDate);
         prepareAndSendEmails(tradeInitiator, userToTradeWith, notificationMessage);
 
         // TODO: Create new trade object and update respective entities
         // TODO: Save in-app notification for receiver
         // TODO: Mark notification as read if user clicks
         // TODO: Create service for getting notifications based on user
+        //TODO: LINK NOTIFICATION TO TRADE
+
 
         // TODO: Client side to link to trades page for that user when a particular
         //  notification is clicked
@@ -74,6 +97,19 @@ public class TradeServiceImpl implements  TradesService{
         //TODO: perform trade if user accepts
         // Return success response
         return new ActionSuccess("Trade request Sent Successfully");
+    }
+
+    private Trades createNewTrade(User tradeInitiator, ClothingItems tradeInitiatorCloth,
+                                  User userToTradeWith, ClothingItems clothRequested,
+                                  String exchangeLocation, LocalDateTime exchangeDate) {
+        Trades newTrade = new Trades();
+        newTrade.setSender(tradeInitiator);
+        newTrade.setReceiver(userToTradeWith);
+        newTrade.setOfferedItem(tradeInitiatorCloth);
+        newTrade.setRequestedItem(clothRequested);
+        newTrade.setExchangeDate(exchangeDate);
+        newTrade.setExchangeLocation(exchangeLocation);
+        return  tradeRepo.save(newTrade);
     }
 
     private void validateTradeConditions(ClothingItems tradeInitiatorCloth,
@@ -91,13 +127,17 @@ public class TradeServiceImpl implements  TradesService{
 
     private String prepareNotificationMessage(User tradeInitiator,
                                               ClothingItems tradeInitiatorCloth,
-                                              ClothingItems clothRequested) {
+                                              ClothingItems clothRequested,
+                                              String exchangeLocation,
+                                              LocalDateTime exchangeDate) {
         String traderInitiatorName = tradeInitiator.getName();
         String tradeInitiatorClothName = tradeInitiatorCloth.getName();
         String clothRequestedName = clothRequested.getName();
         return createNotifiMessage(traderInitiatorName, tradeInitiatorClothName,
-                clothRequestedName);
+                clothRequestedName,exchangeLocation,exchangeDate);
     }
+
+
 
     private void prepareAndSendEmails(User tradeInitiator, User userToTradeWith,
                                       String notificationMessage) {
@@ -136,10 +176,12 @@ public class TradeServiceImpl implements  TradesService{
     }
 
     private String createNotifiMessage(String tradeInitiator, String tradeInitiatorCloth,
-                                       String clothRequested){
+                                       String clothRequested, String exchangeLocation,
+                                       LocalDateTime exchangeDate){
         return tradeInitiator + " " + "wants to trade "+ " " + tradeInitiatorCloth + " "
                 + "for your"
-                + " " + clothRequested;
+                + " " + clothRequested + " " +  "at" + " " + exchangeLocation + " " + "on"
+                +  " " + exchangeDate.toLocalDate() + " " + "at " +  exchangeDate.toLocalTime();
     }
 
 

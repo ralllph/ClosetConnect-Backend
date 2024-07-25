@@ -23,6 +23,8 @@ public class NotifDetails {
 
     private LocalTime time;
 
+    private Long tradeId;
+
     @Override
     public String toString() {
         return "NotifDetails{" +

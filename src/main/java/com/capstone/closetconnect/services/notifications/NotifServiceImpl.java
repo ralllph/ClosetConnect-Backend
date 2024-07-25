@@ -6,6 +6,7 @@ import com.capstone.closetconnect.enums.NotificationStatus;
 import com.capstone.closetconnect.exceptions.NotFoundException;
 import com.capstone.closetconnect.models.ClothingItems;
 import com.capstone.closetconnect.models.Notifications;
+import com.capstone.closetconnect.models.Trades;
 import com.capstone.closetconnect.models.User;
 import com.capstone.closetconnect.repositories.NotificationRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +25,11 @@ public class NotifServiceImpl implements  NotifService{
     private final NotificationRepository notifRepo;
 
     @Override
-    public void createNotification(User user, String message) {
+    public Notifications createNotification(User user, String message) {
         Notifications newNotif = new Notifications();
         newNotif.setMessage(message);
         newNotif.setUser(user);
-        notifRepo.save(newNotif);
+        return notifRepo.save(newNotif);
     }
 
     @Override
@@ -50,6 +51,12 @@ public class NotifServiceImpl implements  NotifService{
         List<Notifications> foundNotifs = notifRepo.findByUserId(userId)
                 .orElseThrow(()-> new NotFoundException("notification for user", userId));
         return notifListToDtos(foundNotifs);
+    }
+
+    @Override
+    public void linkNotificationToTrade(Notifications notif, Trades trades) {
+        notif.setTrade(trades);
+        notifRepo.save(notif);
     }
 
     private List<NotifDetails> notifListToDtos(List<Notifications> notifList){

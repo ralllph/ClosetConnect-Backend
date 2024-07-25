@@ -36,4 +36,8 @@
     <include file="scripts/20_ALTER_TRADES_TABLE_NEW_STRUCTURE.sql" relativeToChangelogFile="true" author="Izueke Raphael" />
     <include file="scripts/21_ALTER_TRADES_TABLE_ADD_FIELDS.sql" relativeToChangelogFile="true" author="Izueke Raphael" />
     <include file="scripts/22_CREATE_NOTIFICATIONS_TABLE.sql" relativeToChangelogFile="true" author="Izueke Raphael" />
+    <include file="scripts/23_ALTER-NOTIFICATIONS_TABLE_ADD_TRADE.sql" relativeToChangelogFile="true" author="Izueke Raphael" />
+    <changeSet id="alter-trades-table" author="Izueke Raphael">
+        <dropColumn tableName="trades" columnName="clothing_item_id"/>
+    </changeSet>
 </databaseChangeLog>

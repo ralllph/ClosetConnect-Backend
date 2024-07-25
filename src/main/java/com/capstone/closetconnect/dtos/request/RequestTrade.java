@@ -1,7 +1,10 @@
 package com.capstone.closetconnect.dtos.request;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -21,4 +24,9 @@ public class RequestTrade {
     @NotNull(message = "userToTradeWithId can not be null")
     private Long userToTradeWithId;
 
+    @NotNull(message = "Exchange date cannot be null")
+    private LocalDateTime exchangeDate;
+
+    @NotBlank(message = "exchange location cannot be blank")
+    private String exchangeLocation;
 }
