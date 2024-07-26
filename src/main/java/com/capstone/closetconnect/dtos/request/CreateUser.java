@@ -45,7 +45,7 @@ public class CreateUser {
     @NotBlank(message = "Name cannot be blank")
     private String name;
 
-
+    @NotNull(message = "Role cannot be blank")
     private Role role;
 
     @NotNull(message = "Gender cannot be blank")
