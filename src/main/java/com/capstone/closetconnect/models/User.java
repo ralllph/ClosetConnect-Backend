@@ -108,7 +108,7 @@ public class User implements Serializable, UserDetails {
 
     public  UserDetail toUserDto(User user) {
         UserDetail userDto = new UserDetail();
-        userDto.setUserName(user.getUsername());
+        userDto.setUserName(user.getActualUserName());
         userDto.setEmail(user.getEmail());
         userDto.setName(user.getName());
         userDto.setTopSize(user.getTopSize());
@@ -151,6 +151,10 @@ public class User implements Serializable, UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         //authorities are the roles added in enum.. role refers to role field
         return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    public String getActualUserName() {
+        return userName;
     }
 
     @Override

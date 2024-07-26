@@ -21,26 +21,19 @@ import java.util.Objects;
 @NoArgsConstructor
 public class UpdateUser {
 
-    @NotBlank(message = "user name cannot be blank")
     private String userName;
 
-    @NotNull(message = "Top size cannot be blank")
     private ClothSize topSize;
 
-    @NotNull(message = "Bottom size cannot be blank")
     private ClothSize bottomSize;
 
-    @NotBlank(message = "Email cannot be blank")
     @Email(message = "Email is not valid", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
     private String email;
 
-    @NotBlank(message = "Name cannot be blank")
     private String name;
 
-    @NotNull(message = "Role cannot be blank")
     private Role role;
 
-    @NotNull(message = "Gender cannot be blank")
     private Gender gender;
 
 

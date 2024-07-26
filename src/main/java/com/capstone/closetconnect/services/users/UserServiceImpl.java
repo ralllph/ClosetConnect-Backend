@@ -8,9 +8,11 @@ import com.capstone.closetconnect.models.User;
 import com.capstone.closetconnect.repositories.UserRepository;
 import com.capstone.closetconnect.services.users.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
@@ -24,9 +26,9 @@ public class UserServiceImpl implements UserService {
         {
             throw new UserAlreadyExistsException(user.getEmail());
         });
-        updateUserEntity(userToBeUpdated, user);
-        User updatedUser = userRepository.save(userToBeUpdated);
-        return updatedUser.toUserDto(userToBeUpdated);
+        User updatedUser = updateUserEntity(userToBeUpdated, user);
+        userRepository.save(updatedUser);
+        return updatedUser.toUserDto(updatedUser);
     }
 
     @Override
@@ -36,14 +38,29 @@ public class UserServiceImpl implements UserService {
         return userFound.toUserDto(userFound);
     }
 
-    private static void updateUserEntity(User userToBeUpdated, UpdateUser updateDetails){
-        userToBeUpdated.setUserName(updateDetails.getUserName());
-        userToBeUpdated.setTopSize(updateDetails.getTopSize());
-        userToBeUpdated.setBottomSize(updateDetails.getBottomSize());
-        userToBeUpdated.setEmail(updateDetails.getEmail());
-        userToBeUpdated.setName(updateDetails.getName());
-        userToBeUpdated.setRole(updateDetails.getRole());
-        userToBeUpdated.setGender(updateDetails.getGender());
+    private  User updateUserEntity(User userToBeUpdated, UpdateUser updateDetails){
+        if (updateDetails.getUserName() != null) {
+            userToBeUpdated.setUserName(updateDetails.getUserName());
+        }
+        if (updateDetails.getTopSize() != null) {
+            userToBeUpdated.setTopSize(updateDetails.getTopSize());
+        }
+        if (updateDetails.getBottomSize() != null) {
+            userToBeUpdated.setBottomSize(updateDetails.getBottomSize());
+        }
+        if (updateDetails.getEmail() != null) {
+            userToBeUpdated.setEmail(updateDetails.getEmail());
+        }
+        if (updateDetails.getName() != null) {
+            userToBeUpdated.setName(updateDetails.getName());
+        }
+        if (updateDetails.getRole() != null) {
+            userToBeUpdated.setRole(updateDetails.getRole());
+        }
+        if (updateDetails.getGender() != null) {
+            userToBeUpdated.setGender(updateDetails.getGender());
+        }
+        return  userRepository.save(userToBeUpdated);
     }
 
 }
