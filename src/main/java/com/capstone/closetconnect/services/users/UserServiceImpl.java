@@ -20,18 +20,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetail updateUser(Long userId, UpdateUser user) {
-        log.info("user id is {}",userId);
         User userToBeUpdated = userRepository.findById(userId)
                 .orElseThrow(()-> new NotFoundException("user",userId));
         userRepository.findByEmail(user.getEmail()).ifPresent(existingUser->
         {
             throw new UserAlreadyExistsException(user.getEmail());
         });
-        log.info("user name just  before here {}", userToBeUpdated.getUsername());
         User updatedUser = updateUserEntity(userToBeUpdated, user);
-        log.info("user name before here {}", userToBeUpdated.getUsername());
         userRepository.save(updatedUser);
-        log.info("user name here {}", updatedUser.getUsername());
         return updatedUser.toUserDto(updatedUser);
     }
 
