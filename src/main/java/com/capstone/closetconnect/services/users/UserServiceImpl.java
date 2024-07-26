@@ -8,9 +8,11 @@ import com.capstone.closetconnect.models.User;
 import com.capstone.closetconnect.repositories.UserRepository;
 import com.capstone.closetconnect.services.users.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
@@ -18,15 +20,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetail updateUser(Long userId, UpdateUser user) {
+        log.info("user id is {}",userId);
         User userToBeUpdated = userRepository.findById(userId)
                 .orElseThrow(()-> new NotFoundException("user",userId));
         userRepository.findByEmail(user.getEmail()).ifPresent(existingUser->
         {
             throw new UserAlreadyExistsException(user.getEmail());
         });
-        updateUserEntity(userToBeUpdated, user);
-        User updatedUser = userRepository.save(userToBeUpdated);
-        return updatedUser.toUserDto(userToBeUpdated);
+        log.info("user name just  before here {}", userToBeUpdated.getUsername());
+        User updatedUser = updateUserEntity(userToBeUpdated, user);
+        log.info("user name before here {}", userToBeUpdated.getUsername());
+        userRepository.save(updatedUser);
+        log.info("user name here {}", updatedUser.getUsername());
+        return updatedUser.toUserDto(updatedUser);
     }
 
     @Override
@@ -36,14 +42,29 @@ public class UserServiceImpl implements UserService {
         return userFound.toUserDto(userFound);
     }
 
-    private static void updateUserEntity(User userToBeUpdated, UpdateUser updateDetails){
-        userToBeUpdated.setUserName(updateDetails.getUserName());
-        userToBeUpdated.setTopSize(updateDetails.getTopSize());
-        userToBeUpdated.setBottomSize(updateDetails.getBottomSize());
-        userToBeUpdated.setEmail(updateDetails.getEmail());
-        userToBeUpdated.setName(updateDetails.getName());
-        userToBeUpdated.setRole(updateDetails.getRole());
-        userToBeUpdated.setGender(updateDetails.getGender());
+    private  User updateUserEntity(User userToBeUpdated, UpdateUser updateDetails){
+        if (updateDetails.getUserName() != null) {
+            userToBeUpdated.setUserName(updateDetails.getUserName());
+        }
+        if (updateDetails.getTopSize() != null) {
+            userToBeUpdated.setTopSize(updateDetails.getTopSize());
+        }
+        if (updateDetails.getBottomSize() != null) {
+            userToBeUpdated.setBottomSize(updateDetails.getBottomSize());
+        }
+        if (updateDetails.getEmail() != null) {
+            userToBeUpdated.setEmail(updateDetails.getEmail());
+        }
+        if (updateDetails.getName() != null) {
+            userToBeUpdated.setName(updateDetails.getName());
+        }
+        if (updateDetails.getRole() != null) {
+            userToBeUpdated.setRole(updateDetails.getRole());
+        }
+        if (updateDetails.getGender() != null) {
+            userToBeUpdated.setGender(updateDetails.getGender());
+        }
+        return  userRepository.save(userToBeUpdated);
     }
 
 }
