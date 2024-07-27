@@ -2,6 +2,7 @@ package com.capstone.closetconnect.services.trades;
 
 import com.capstone.closetconnect.dtos.request.RequestTrade;
 import com.capstone.closetconnect.dtos.response.ActionSuccess;
+import com.capstone.closetconnect.dtos.response.TradeDetails;
 import com.capstone.closetconnect.exceptions.NotAssociatedException;
 import com.capstone.closetconnect.exceptions.NotFoundException;
 import com.capstone.closetconnect.exceptions.SelfTradeException;
@@ -17,11 +18,14 @@ import com.capstone.closetconnect.services.email.EmailService;
 import com.capstone.closetconnect.services.notifications.NotifService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -76,6 +80,7 @@ public class TradeServiceImpl implements  TradesService{
 
         //link notification to trade
         notifService.linkNotificationToTrade(receiverNotif,newTrade);
+
         // Prepare notifications and emails
         String notificationMessage = prepareNotificationMessage(tradeInitiator,
                 tradeInitiatorCloth,
@@ -93,7 +98,6 @@ public class TradeServiceImpl implements  TradesService{
         //  notification is clicked
         // TODO: If user accepts/rejects send async email notification to sender
         //  and in-app notification to sender
-        //TODO:  Hide email details in env variable
         //TODO: perform trade if user accepts
         // Return success response
         return new ActionSuccess("Trade request Sent Successfully");
@@ -168,6 +172,31 @@ public class TradeServiceImpl implements  TradesService{
     }
 
     public void tradeCloth(RequestTrade tradeRequest){
+    }
+
+    @Override
+    public Page<TradeDetails> getUserSentTrades(Long userId, Pageable pageable) {
+        checkUserExist(userId);
+        return tradeRepo.getUserSentTradeDetails(userId,pageable);
+    }
+
+    @Override
+    public Page<TradeDetails> getUserReceivedTrades(Long userId, Pageable pageable) {
+        checkUserExist(userId);
+        return tradeRepo.getUserReceivedDetails(userId,pageable);
+    }
+
+    @Override
+    public TradeDetails getTrade(Long tradeId) {
+        checkTradeExists(tradeId);
+        return tradeRepo.getTrade(tradeId)
+                .orElseThrow(()-> new NotFoundException("trade",tradeId));
+    }
+
+    @Override
+    public Trades checkTradeExists(Long tradeId) {
+        return tradeRepo.findById(tradeId)
+                .orElseThrow(()-> new NotFoundException("trade",tradeId));
     }
 
     private User checkUserExist(Long userId){
