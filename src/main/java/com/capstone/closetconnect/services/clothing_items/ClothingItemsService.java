@@ -1,6 +1,7 @@
 package com.capstone.closetconnect.services.clothing_items;
 
 import com.capstone.closetconnect.dtos.request.ClothingItem;
+import com.capstone.closetconnect.dtos.request.UpdateCloth;
 import com.capstone.closetconnect.dtos.response.ClothDetailsWithUser;
 import com.capstone.closetconnect.dtos.response.ClothingItemsDto;
 import com.capstone.closetconnect.dtos.response.ActionSuccess;
@@ -24,7 +25,7 @@ public interface ClothingItemsService {
 
     ClothingItemsDto createNewClothingItem(Long userId, ClothingItem newClothingItem);
 
-    ClothingItemsDto updateClothingItem(Long clothId, Long userId, ClothingItem clothingItem);
+    ClothingItemsDto updateClothingItem(Long clothId, Long userId, UpdateCloth clothingItem);
 
     ClothDetailsWithUser getClothingItem(Long clothId);
 

@@ -1,6 +1,7 @@
 package com.capstone.closetconnect.services.clothing_items;
 
 import com.capstone.closetconnect.dtos.request.ClothingItem;
+import com.capstone.closetconnect.dtos.request.UpdateCloth;
 import com.capstone.closetconnect.dtos.response.ClothDetailsWithUser;
 import com.capstone.closetconnect.dtos.response.ClothingItemsDto;
 import com.capstone.closetconnect.dtos.response.ActionSuccess;
@@ -121,7 +122,7 @@ public class ClothingItemsServiceImpl implements ClothingItemsService {
     }
 
     @Override
-    public ClothingItemsDto updateClothingItem(Long clothId, Long userId, ClothingItem clothingItem) {
+    public ClothingItemsDto updateClothingItem(Long clothId, Long userId, UpdateCloth clothingItem) {
         User userUpdating = checkUserExist(userId);
         ClothingItems clothItemUpdating = checkClothItemExists(clothId);
         if(!clothItemUpdating.getUser().getId().equals(userUpdating.getId())){
@@ -186,15 +187,31 @@ public class ClothingItemsServiceImpl implements ClothingItemsService {
     }
 
     private ClothingItems updateClothingEntity(ClothingItems clothToBeUpdated,
-            ClothingItem newClothDetails){
-        clothToBeUpdated.setName(newClothDetails.getName());
-        clothToBeUpdated.setGender(newClothDetails.getGender());
-        clothToBeUpdated.setDescription(newClothDetails.getDescription());
-        clothToBeUpdated.setType(newClothDetails.getType());
-        clothToBeUpdated.setStatus(newClothDetails.getStatus());
-        clothToBeUpdated.setItemCondition(newClothDetails.getItemCondition());
-        clothToBeUpdated.setClothingItemSize(newClothDetails.getClothingItemSize());
-        clothToBeUpdated.setSource(newClothDetails.getSource());
+            UpdateCloth newClothDetails){
+        if(newClothDetails.getName() != null){
+            clothToBeUpdated.setName(newClothDetails.getName());
+        }
+        if(newClothDetails.getGender() !=null){
+            clothToBeUpdated.setGender(newClothDetails.getGender());
+        }
+        if(newClothDetails.getDescription() != null){
+            clothToBeUpdated.setDescription(newClothDetails.getDescription());
+        }
+        if(newClothDetails.getType() !=null){
+            clothToBeUpdated.setType(newClothDetails.getType());
+        }
+        if(newClothDetails.getStatus()!=null){
+            clothToBeUpdated.setStatus(newClothDetails.getStatus());
+        }
+        if(newClothDetails.getItemCondition()!=null){
+            clothToBeUpdated.setItemCondition(newClothDetails.getItemCondition());
+        }
+        if(newClothDetails.getClothingItemSize()!=null){
+            clothToBeUpdated.setClothingItemSize(newClothDetails.getClothingItemSize());
+        }
+        if(newClothDetails.getSource() != null){
+            clothToBeUpdated.setSource(newClothDetails.getSource());
+        }
         clothingItemsRepository.save(clothToBeUpdated);
         return clothToBeUpdated;
     }
@@ -204,5 +221,6 @@ public class ClothingItemsServiceImpl implements ClothingItemsService {
                 .map(ClothingItems::toClothingItemDto)
                 .collect(Collectors.toList());
     }
+
 
 }

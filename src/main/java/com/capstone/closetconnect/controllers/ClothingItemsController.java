@@ -1,6 +1,7 @@
 package com.capstone.closetconnect.controllers;
 
 import com.capstone.closetconnect.dtos.request.ClothingItem;
+import com.capstone.closetconnect.dtos.request.UpdateCloth;
 import com.capstone.closetconnect.dtos.response.ClothDetailsWithUser;
 import com.capstone.closetconnect.dtos.response.ClothingItemsDto;
 import com.capstone.closetconnect.dtos.response.ActionSuccess;
@@ -105,7 +106,7 @@ public class ClothingItemsController {
 
     @PutMapping("/update/{clothId}/{userId}")
     public ResponseEntity<ClothingItemsDto> updateClothingItem(
-            @RequestBody @Valid ClothingItem clothingItem,
+            @RequestBody UpdateCloth clothingItem,
             @PathVariable("userId") Long userId,
             @PathVariable("clothId") Long clothId
             ){
