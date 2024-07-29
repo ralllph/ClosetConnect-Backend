@@ -1,21 +1,24 @@
 package com.capstone.closetconnect.services.clothing_items;
 
 import com.capstone.closetconnect.dtos.request.ClothingItem;
+import com.capstone.closetconnect.dtos.request.UpdateCloth;
 import com.capstone.closetconnect.dtos.response.ClothDetailsWithUser;
 import com.capstone.closetconnect.dtos.response.ClothingItemsDto;
-import com.capstone.closetconnect.dtos.response.DeleteSuccess;
+import com.capstone.closetconnect.dtos.response.ActionSuccess;
 import com.capstone.closetconnect.enums.ClothType;
 import com.capstone.closetconnect.enums.Gender;
+import com.capstone.closetconnect.models.ClothingItems;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Optional;
 
 public interface ClothingItemsService {
 
     Page<ClothingItemsDto> searchUserClothingItems
             (Long userId, String itemName, ClothType itemType, Gender gender, Pageable pageable);
+
+    Page<ClothDetailsWithUser> searchAllClothingItems
+            (String itemName, ClothType itemType, Gender gender, Pageable pageable);
 
     void uploadClothingItemImage(Long clothId, MultipartFile file);
 
@@ -25,7 +28,7 @@ public interface ClothingItemsService {
 
     ClothingItemsDto createNewClothingItem(Long userId, ClothingItem newClothingItem);
 
-    ClothingItemsDto updateClothingItem(Long clothId, Long userId, ClothingItem clothingItem);
+    ClothingItemsDto updateClothingItem(Long clothId, Long userId, UpdateCloth clothingItem);
 
     ClothDetailsWithUser getClothingItem(Long clothId);
 
@@ -33,5 +36,7 @@ public interface ClothingItemsService {
 
     Page<ClothDetailsWithUser> getAllClothingItemsWithUserInfo(Pageable pageable);
 
-    DeleteSuccess deleteClothingItem(Long clothId, Long userId);
+    ActionSuccess deleteClothingItem(Long clothId, Long userId);
+
+    ClothingItems checkClothItemExists(Long clothId);
 }

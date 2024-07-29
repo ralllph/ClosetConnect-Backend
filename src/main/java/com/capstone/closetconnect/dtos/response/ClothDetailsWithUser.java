@@ -1,6 +1,9 @@
 package com.capstone.closetconnect.dtos.response;
 
 
+import com.capstone.closetconnect.enums.ClothType;
+import com.capstone.closetconnect.enums.Gender;
+import com.capstone.closetconnect.enums.Status;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -20,7 +23,7 @@ public class ClothDetailsWithUser {
 
     private String photoUrl;
 
-    private String status;
+    private Status status;
 
     private Long userId;
 
@@ -28,13 +31,24 @@ public class ClothDetailsWithUser {
 
     private LocalDate createdAt;
 
-    public ClothDetailsWithUser(Long id, String name, String description, String photoUrl, String status, Long userId,
-                                String userFullName, Timestamp createdAt) {
+    private Gender gender;
+
+    private ClothType type;
+
+    public ClothDetailsWithUser(Long id, String name, String description,
+                                String photoUrl,
+                                Status status, Long userId,
+                                String userFullName, Timestamp createdAt,
+                                Gender gender,
+                                ClothType type
+                                ) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.photoUrl = photoUrl;
         this.status = status;
+        this.gender = gender;
+        this.type = type;
         this.userId = userId;
         this.userFullName = userFullName;
         this.createdAt = createdAt.toLocalDateTime().toLocalDate();

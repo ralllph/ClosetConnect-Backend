@@ -1,9 +1,10 @@
 package com.capstone.closetconnect.services.clothing_items;
 
 import com.capstone.closetconnect.dtos.request.ClothingItem;
+import com.capstone.closetconnect.dtos.request.UpdateCloth;
 import com.capstone.closetconnect.dtos.response.ClothDetailsWithUser;
 import com.capstone.closetconnect.dtos.response.ClothingItemsDto;
-import com.capstone.closetconnect.dtos.response.DeleteSuccess;
+import com.capstone.closetconnect.dtos.response.ActionSuccess;
 import com.capstone.closetconnect.enums.ClothType;
 import com.capstone.closetconnect.enums.Gender;
 import com.capstone.closetconnect.exceptions.*;
@@ -44,24 +45,50 @@ public class ClothingItemsServiceImpl implements ClothingItemsService {
             (Long userId, String itemName, ClothType itemType, Gender gender, Pageable pageable) {
         if(itemName == null  && itemType ==null && gender==null)
             throw new MissingParameterException();
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(itemName, userId));
+        userRepository.findById(userId).
+                orElseThrow(() -> new NotFoundException(itemName, userId));
         Page<ClothingItems> clothingItemsFound = Page.empty(pageable);
         if(itemName!=null && !itemName.isEmpty()) {
            clothingItemsFound = clothingItemsRepository
                     .findByUserIdAndNameContaining(userId, itemName,pageable);
         }
         else if(itemType!=null ) {
-            clothingItemsFound = clothingItemsRepository.findByUserIdAndType(userId, itemType, pageable);
+            clothingItemsFound = clothingItemsRepository
+                    .findByUserIdAndType(userId, itemType, pageable);
         }
         else if(gender!=null ) {
-            clothingItemsFound = clothingItemsRepository.findByUserIdAndGender(userId, gender, pageable);
+            clothingItemsFound = clothingItemsRepository
+                    .findByUserIdAndGender(userId, gender, pageable);
         }
          return clothingItemsFound.map(this::clothingItemToDto);
     }
 
     @Override
+    public Page<ClothDetailsWithUser> searchAllClothingItems
+            (String itemName, ClothType itemType,
+             Gender gender, Pageable pageable) {
+        if(itemName == null  && itemType ==null && gender==null)
+            throw new MissingParameterException();
+        Page<ClothDetailsWithUser> clothingItemsFound = Page.empty(pageable);
+        if(itemName!=null && !itemName.isEmpty()) {
+            clothingItemsFound = clothingItemsRepository
+                    .getAllClothingItemsByNameContaining(itemName,pageable);
+        }
+        else if(itemType!=null ) {
+            clothingItemsFound = clothingItemsRepository
+                    .getAllClothingItemsByType(itemType, pageable);
+        }
+        else if(gender!=null ) {
+            clothingItemsFound = clothingItemsRepository
+                    .getAllClothingItemsByGender(gender, pageable);
+        }
+        return clothingItemsFound;
+    }
+
+    @Override
     public void uploadClothingItemImage(Long clothId, MultipartFile file) {
-        clothingItemsRepository.findById(clothId).orElseThrow(()->new NotFoundException("cloth",clothId));
+        clothingItemsRepository.findById(clothId)
+                .orElseThrow(()->new NotFoundException("cloth",clothId));
         String clothImageId = UUID.randomUUID().toString();
 
         try {
@@ -121,7 +148,8 @@ public class ClothingItemsServiceImpl implements ClothingItemsService {
     }
 
     @Override
-    public ClothingItemsDto updateClothingItem(Long clothId, Long userId, ClothingItem clothingItem) {
+    public ClothingItemsDto updateClothingItem
+            (Long clothId, Long userId, UpdateCloth clothingItem) {
         User userUpdating = checkUserExist(userId);
         ClothingItems clothItemUpdating = checkClothItemExists(clothId);
         if(!clothItemUpdating.getUser().getId().equals(userUpdating.getId())){
@@ -156,7 +184,7 @@ public class ClothingItemsServiceImpl implements ClothingItemsService {
     }
 
     @Override
-    public DeleteSuccess deleteClothingItem(Long clothId, Long userId) {
+    public ActionSuccess deleteClothingItem(Long clothId, Long userId) {
         User user= checkUserExist(userId);
         ClothingItems clothToBeDeleted = checkClothItemExists(clothId);
         //check if user owns cloth
@@ -166,7 +194,7 @@ public class ClothingItemsServiceImpl implements ClothingItemsService {
 
         clothingItemsRepository.deleteClothingItem(clothId);
 
-        return new DeleteSuccess();
+        return new ActionSuccess("Clothing item deleted successfuly");
     }
 
 
@@ -179,20 +207,38 @@ public class ClothingItemsServiceImpl implements ClothingItemsService {
                 .orElseThrow(()-> new NotFoundException("user", userId));
     }
 
-    private ClothingItems checkClothItemExists(Long clothId){
+    @Override
+    public ClothingItems checkClothItemExists(Long clothId){
         return clothingItemsRepository.findById(clothId)
                 .orElseThrow(()-> new NotFoundException("cloth", clothId));
     }
 
     private ClothingItems updateClothingEntity(ClothingItems clothToBeUpdated,
-            ClothingItem newClothDetails){
-        clothToBeUpdated.setName(newClothDetails.getName());
-        clothToBeUpdated.setGender(newClothDetails.getGender());
-        clothToBeUpdated.setDescription(newClothDetails.getDescription());
-        clothToBeUpdated.setType(newClothDetails.getType());
-        clothToBeUpdated.setItemCondition(newClothDetails.getItemCondition());
-        clothToBeUpdated.setClothingItemSize(newClothDetails.getClothingItemSize());
-        clothToBeUpdated.setSource(newClothDetails.getSource());
+            UpdateCloth newClothDetails){
+        if(newClothDetails.getName() != null){
+            clothToBeUpdated.setName(newClothDetails.getName());
+        }
+        if(newClothDetails.getGender() !=null){
+            clothToBeUpdated.setGender(newClothDetails.getGender());
+        }
+        if(newClothDetails.getDescription() != null){
+            clothToBeUpdated.setDescription(newClothDetails.getDescription());
+        }
+        if(newClothDetails.getType() !=null){
+            clothToBeUpdated.setType(newClothDetails.getType());
+        }
+        if(newClothDetails.getStatus()!=null){
+            clothToBeUpdated.setStatus(newClothDetails.getStatus());
+        }
+        if(newClothDetails.getItemCondition()!=null){
+            clothToBeUpdated.setItemCondition(newClothDetails.getItemCondition());
+        }
+        if(newClothDetails.getClothingItemSize()!=null){
+            clothToBeUpdated.setClothingItemSize(newClothDetails.getClothingItemSize());
+        }
+        if(newClothDetails.getSource() != null){
+            clothToBeUpdated.setSource(newClothDetails.getSource());
+        }
         clothingItemsRepository.save(clothToBeUpdated);
         return clothToBeUpdated;
     }
@@ -202,5 +248,6 @@ public class ClothingItemsServiceImpl implements ClothingItemsService {
                 .map(ClothingItems::toClothingItemDto)
                 .collect(Collectors.toList());
     }
+
 
 }

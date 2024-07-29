@@ -1,5 +1,6 @@
 package com.capstone.closetconnect.configs;
 
+import com.capstone.closetconnect.exceptions.LoginFailedException;
 import com.capstone.closetconnect.services.jwt.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -69,6 +70,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 );
                 //update security context
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+            }else{
+                throw new LoginFailedException();
             }
         }
 

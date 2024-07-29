@@ -1,9 +1,10 @@
 package com.capstone.closetconnect.controllers;
 
 import com.capstone.closetconnect.dtos.request.ClothingItem;
+import com.capstone.closetconnect.dtos.request.UpdateCloth;
 import com.capstone.closetconnect.dtos.response.ClothDetailsWithUser;
 import com.capstone.closetconnect.dtos.response.ClothingItemsDto;
-import com.capstone.closetconnect.dtos.response.DeleteSuccess;
+import com.capstone.closetconnect.dtos.response.ActionSuccess;
 import com.capstone.closetconnect.enums.ClothType;
 import com.capstone.closetconnect.enums.Gender;
 import com.capstone.closetconnect.exceptions.PaginationException;
@@ -40,11 +41,29 @@ public class ClothingItemsController {
              ){
         log.info("Incoming search request for user with id {} with parameters: " +
                 "itemName={}, itemType={}, gender={}", userId, itemName, itemType, gender);
-        if(page<0 || size <1)
-            throw new PaginationException();
+        checkPagination(page,size);
         Pageable pageable = PageRequest.of(page, size);
         return new ResponseEntity<>(clothingItemsService.
                 searchUserClothingItems(userId,itemName,itemType,gender,pageable),
+                HttpStatus.OK);
+    }
+
+    @GetMapping("/search/all")
+    public ResponseEntity<Page<ClothDetailsWithUser>> searchAllClothItems
+            (
+             @RequestParam(required = false) String itemName,
+             @RequestParam(required = false) ClothType itemType,
+             @RequestParam(required = false)
+             Gender gender,
+             @RequestParam(defaultValue = "0") int page,
+             @RequestParam(defaultValue = "10") int size
+            ){
+        log.info("Incoming search request for ull items with parameters: " +
+                "itemName={}, itemType={}, gender={}", itemName, itemType, gender);
+        checkPagination(page,size);
+        Pageable pageable = PageRequest.of(page, size);
+        return new ResponseEntity<>(clothingItemsService.
+                searchAllClothingItems(itemName,itemType,gender,pageable),
                 HttpStatus.OK);
     }
 
@@ -105,7 +124,7 @@ public class ClothingItemsController {
 
     @PutMapping("/update/{clothId}/{userId}")
     public ResponseEntity<ClothingItemsDto> updateClothingItem(
-            @RequestBody @Valid ClothingItem clothingItem,
+            @RequestBody UpdateCloth clothingItem,
             @PathVariable("userId") Long userId,
             @PathVariable("clothId") Long clothId
             ){
@@ -115,7 +134,7 @@ public class ClothingItemsController {
     }
 
     @DeleteMapping("/{clothId}/user/{userId}")
-    public ResponseEntity<DeleteSuccess> deleteClothingItem(
+    public ResponseEntity<ActionSuccess> deleteClothingItem(
             @PathVariable("clothId") Long clothId,
             @PathVariable("userId") Long userId){
         return new ResponseEntity<>(clothingItemsService.deleteClothingItem(clothId,userId),HttpStatus.OK);

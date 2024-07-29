@@ -3,6 +3,7 @@ package com.capstone.closetconnect.dtos.request;
 import com.capstone.closetconnect.enums.ClothSize;
 import com.capstone.closetconnect.enums.ClothType;
 import com.capstone.closetconnect.enums.Gender;
+import com.capstone.closetconnect.enums.Status;
 import com.capstone.closetconnect.models.ClothingItems;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -32,6 +33,8 @@ public class ClothingItem {
 
     private String source;
 
+    private Status status;
+
     @NotBlank(message = "Name cannot be blank")
     private String name;
 
@@ -47,6 +50,7 @@ public class ClothingItem {
         clothItemEntity.setSource(newClothingItem.getSource());
         clothItemEntity.setName(newClothingItem.getName());
         clothItemEntity.setGender(newClothingItem.getGender());
+        clothItemEntity.setStatus(newClothingItem.getStatus());
         return clothItemEntity;
     }
 
