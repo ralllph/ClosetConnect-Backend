@@ -17,6 +17,9 @@ public interface ClothingItemsService {
     Page<ClothingItemsDto> searchUserClothingItems
             (Long userId, String itemName, ClothType itemType, Gender gender, Pageable pageable);
 
+    Page<ClothDetailsWithUser> searchAllClothingItems
+            (String itemName, ClothType itemType, Gender gender, Pageable pageable);
+
     void uploadClothingItemImage(Long clothId, MultipartFile file);
 
     byte[] getUserClothingImage(Long clothId);

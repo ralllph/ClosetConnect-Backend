@@ -41,11 +41,29 @@ public class ClothingItemsController {
              ){
         log.info("Incoming search request for user with id {} with parameters: " +
                 "itemName={}, itemType={}, gender={}", userId, itemName, itemType, gender);
-        if(page<0 || size <1)
-            throw new PaginationException();
+        checkPagination(page,size);
         Pageable pageable = PageRequest.of(page, size);
         return new ResponseEntity<>(clothingItemsService.
                 searchUserClothingItems(userId,itemName,itemType,gender,pageable),
+                HttpStatus.OK);
+    }
+
+    @GetMapping("/search/all")
+    public ResponseEntity<Page<ClothDetailsWithUser>> searchAllClothItems
+            (
+             @RequestParam(required = false) String itemName,
+             @RequestParam(required = false) ClothType itemType,
+             @RequestParam(required = false)
+             Gender gender,
+             @RequestParam(defaultValue = "0") int page,
+             @RequestParam(defaultValue = "10") int size
+            ){
+        log.info("Incoming search request for ull items with parameters: " +
+                "itemName={}, itemType={}, gender={}", itemName, itemType, gender);
+        checkPagination(page,size);
+        Pageable pageable = PageRequest.of(page, size);
+        return new ResponseEntity<>(clothingItemsService.
+                searchAllClothingItems(itemName,itemType,gender,pageable),
                 HttpStatus.OK);
     }
 

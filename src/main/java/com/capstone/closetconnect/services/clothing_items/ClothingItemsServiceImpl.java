@@ -45,24 +45,50 @@ public class ClothingItemsServiceImpl implements ClothingItemsService {
             (Long userId, String itemName, ClothType itemType, Gender gender, Pageable pageable) {
         if(itemName == null  && itemType ==null && gender==null)
             throw new MissingParameterException();
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(itemName, userId));
+        userRepository.findById(userId).
+                orElseThrow(() -> new NotFoundException(itemName, userId));
         Page<ClothingItems> clothingItemsFound = Page.empty(pageable);
         if(itemName!=null && !itemName.isEmpty()) {
            clothingItemsFound = clothingItemsRepository
                     .findByUserIdAndNameContaining(userId, itemName,pageable);
         }
         else if(itemType!=null ) {
-            clothingItemsFound = clothingItemsRepository.findByUserIdAndType(userId, itemType, pageable);
+            clothingItemsFound = clothingItemsRepository
+                    .findByUserIdAndType(userId, itemType, pageable);
         }
         else if(gender!=null ) {
-            clothingItemsFound = clothingItemsRepository.findByUserIdAndGender(userId, gender, pageable);
+            clothingItemsFound = clothingItemsRepository
+                    .findByUserIdAndGender(userId, gender, pageable);
         }
          return clothingItemsFound.map(this::clothingItemToDto);
     }
 
     @Override
+    public Page<ClothDetailsWithUser> searchAllClothingItems
+            (String itemName, ClothType itemType,
+             Gender gender, Pageable pageable) {
+        if(itemName == null  && itemType ==null && gender==null)
+            throw new MissingParameterException();
+        Page<ClothDetailsWithUser> clothingItemsFound = Page.empty(pageable);
+        if(itemName!=null && !itemName.isEmpty()) {
+            clothingItemsFound = clothingItemsRepository
+                    .getAllClothingItemsByNameContaining(itemName,pageable);
+        }
+        else if(itemType!=null ) {
+            clothingItemsFound = clothingItemsRepository
+                    .getAllClothingItemsByType(itemType, pageable);
+        }
+        else if(gender!=null ) {
+            clothingItemsFound = clothingItemsRepository
+                    .getAllClothingItemsByGender(gender, pageable);
+        }
+        return clothingItemsFound;
+    }
+
+    @Override
     public void uploadClothingItemImage(Long clothId, MultipartFile file) {
-        clothingItemsRepository.findById(clothId).orElseThrow(()->new NotFoundException("cloth",clothId));
+        clothingItemsRepository.findById(clothId)
+                .orElseThrow(()->new NotFoundException("cloth",clothId));
         String clothImageId = UUID.randomUUID().toString();
 
         try {
@@ -122,7 +148,8 @@ public class ClothingItemsServiceImpl implements ClothingItemsService {
     }
 
     @Override
-    public ClothingItemsDto updateClothingItem(Long clothId, Long userId, UpdateCloth clothingItem) {
+    public ClothingItemsDto updateClothingItem
+            (Long clothId, Long userId, UpdateCloth clothingItem) {
         User userUpdating = checkUserExist(userId);
         ClothingItems clothItemUpdating = checkClothItemExists(clothId);
         if(!clothItemUpdating.getUser().getId().equals(userUpdating.getId())){
