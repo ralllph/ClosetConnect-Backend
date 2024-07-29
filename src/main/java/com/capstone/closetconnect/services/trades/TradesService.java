@@ -1,5 +1,6 @@
 package com.capstone.closetconnect.services.trades;
 
+import com.capstone.closetconnect.dtos.request.ChangeTradeStatus;
 import com.capstone.closetconnect.dtos.request.RequestTrade;
 import com.capstone.closetconnect.dtos.response.ActionSuccess;
 import com.capstone.closetconnect.dtos.response.TradeDetails;
@@ -12,7 +13,7 @@ import java.util.Optional;
 public interface TradesService {
 
     ActionSuccess requestTrade(RequestTrade tradeRequest);
-    void tradeCloth(RequestTrade tradeRequest);
+    void tradeCloth(Long tradeId);
 
     Page<TradeDetails> getUserSentTrades(Long userId, Pageable pageable);
 
@@ -21,4 +22,6 @@ public interface TradesService {
     TradeDetails getTrade(Long tradeId);
 
     Trades checkTradeExists(Long tradeId);
+
+    ActionSuccess updateTradeStatus(Long receiverId, Long tradeId, ChangeTradeStatus status);
 }

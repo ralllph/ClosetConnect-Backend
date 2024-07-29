@@ -1,8 +1,11 @@
 package com.capstone.closetconnect.services.trades;
 
+import com.capstone.closetconnect.dtos.request.ChangeTradeStatus;
 import com.capstone.closetconnect.dtos.request.RequestTrade;
 import com.capstone.closetconnect.dtos.response.ActionSuccess;
 import com.capstone.closetconnect.dtos.response.TradeDetails;
+import com.capstone.closetconnect.enums.Status;
+import com.capstone.closetconnect.enums.TradeStatus;
 import com.capstone.closetconnect.exceptions.NotAssociatedException;
 import com.capstone.closetconnect.exceptions.NotFoundException;
 import com.capstone.closetconnect.exceptions.SelfTradeException;
@@ -16,14 +19,17 @@ import com.capstone.closetconnect.repositories.UserRepository;
 import com.capstone.closetconnect.services.clothing_items.ClothingItemsService;
 import com.capstone.closetconnect.services.email.EmailService;
 import com.capstone.closetconnect.services.notifications.NotifService;
+import liquibase.change.Change;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -37,6 +43,8 @@ public class TradeServiceImpl implements  TradesService{
     private  final TradeRepository tradeRepo;
 
     private final ClothingItemsService clothingItemsService;
+
+    private final ClothingItemsRepository clothRepo;
 
     private final NotifService notifService;
 
@@ -87,19 +95,6 @@ public class TradeServiceImpl implements  TradesService{
                 clothRequested,exchangeLocation,exchangeDate);
         prepareAndSendEmails(tradeInitiator, userToTradeWith, notificationMessage);
 
-        // TODO: Create new trade object and update respective entities
-        // TODO: Save in-app notification for receiver
-        // TODO: Mark notification as read if user clicks
-        // TODO: Create service for getting notifications based on user
-        //TODO: LINK NOTIFICATION TO TRADE
-
-
-        // TODO: Client side to link to trades page for that user when a particular
-        //  notification is clicked
-        // TODO: If user accepts/rejects send async email notification to sender
-        //  and in-app notification to sender
-        //TODO: perform trade if user accepts
-        // Return success response
         return new ActionSuccess("Trade request Sent Successfully");
     }
 
@@ -171,7 +166,35 @@ public class TradeServiceImpl implements  TradesService{
                 senderVariables);
     }
 
-    public void tradeCloth(RequestTrade tradeRequest){
+    @Transactional
+    public void tradeCloth(Long tradeId){
+        Trades trade = checkTradeExists(tradeId);
+
+        // Retrieve items and users
+        ClothingItems offeredItem = trade.getOfferedItem();
+        ClothingItems requestedItem = trade.getRequestedItem();
+
+        User sender = trade.getSender();
+        User receiver = trade.getReceiver();
+
+        // mark items as unavailable for trade
+        offeredItem.setStatus(Status.NOT_AVAILABLE);
+        requestedItem.setStatus(Status.NOT_AVAILABLE);
+
+        // Swap items between users
+        offeredItem.setUser(receiver);
+        requestedItem.setUser(sender);
+
+
+        // Save changes
+        clothRepo.save(offeredItem);
+        clothRepo.save(requestedItem);
+
+        // Update the trade status
+        trade.setStatus(TradeStatus.COMPLETED);
+
+        // Save the trade
+        tradeRepo.save(trade);
     }
 
     @Override
@@ -197,6 +220,132 @@ public class TradeServiceImpl implements  TradesService{
     public Trades checkTradeExists(Long tradeId) {
         return tradeRepo.findById(tradeId)
                 .orElseThrow(()-> new NotFoundException("trade",tradeId));
+    }
+
+    @Override
+    public ActionSuccess updateTradeStatus(Long receiverId,Long tradeId,
+                                           ChangeTradeStatus status) {
+
+        checkUserExist(receiverId);
+        Trades tradeToUpdate = checkTradeExists(tradeId);
+
+        if(tradeToUpdate.getReceiver().getId().equals(receiverId)){
+
+            Trades updatedTrade = updateTradeStatusEntity(tradeToUpdate, status);
+            String subject= "Trade Notification";
+            String senderName = tradeToUpdate.getSender().getName();
+            String senderEmail = tradeToUpdate.getSender().getEmail();
+            String receiverName = tradeToUpdate.getReceiver().getName();
+            String itemRequestedName = tradeToUpdate.getRequestedItem().getName();
+
+            if(updatedTrade.getStatus().equals(TradeStatus.APPROVED)){
+                tradeCloth(tradeId);
+                //create notif  both parties of success
+                String receiverNotifMessage = "Your successfully accepted a trade from "
+                        + senderName + " " +
+                        customAcceptanceMessage(tradeToUpdate);
+                String senderNotifMessage = "Your trade request to " + " " +
+                        receiverName + " was accepted" + " " +
+                        customAcceptanceMessage(tradeToUpdate);
+
+
+                Notifications receiverNotif = notifService.
+                        createNotification(tradeToUpdate.getReceiver(),receiverNotifMessage);
+                notifService.linkNotificationToTrade(receiverNotif,tradeToUpdate);
+
+                //sender side
+                Notifications senderNotif = notifService.
+                        createNotification(tradeToUpdate.getSender(),senderNotifMessage);
+                notifService.linkNotificationToTrade(senderNotif,tradeToUpdate);
+
+                //sender email
+                Map<String, String> senderEmailVariables = emailService.formEmailBody(senderName,
+                        senderNotifMessage,
+                        subject, "email-template");
+                Map<String, Object> senderVariables = emailService
+                        .formTemplateVariables(senderName,
+                                senderNotifMessage);
+                emailService.sendEmail(senderEmail, senderEmailVariables.get("subject"),
+                        senderEmailVariables.get("templateName"),
+                        senderVariables);
+
+                //receiver email
+                Map<String, String> receiverEmailVariables = emailService.formEmailBody(receiverName,
+                        receiverNotifMessage,
+                        subject, "email-template");
+                Map<String, Object> receiverVariables = emailService
+                        .formTemplateVariables(receiverName,
+                                receiverNotifMessage);
+                emailService.sendEmail(receiverName, receiverEmailVariables.get("subject"),
+                        receiverEmailVariables.get("templateName"),
+                        receiverVariables);
+            }
+            if(updatedTrade.getStatus().equals(TradeStatus.REJECTED)){
+                tradeToUpdate.setStatus(TradeStatus.REJECTED);
+                //create notif  both parties for failure
+                String receiverNotifMessage = "Your rejected a trade with "
+                        + senderName + " " +
+                        "for your " + " " + itemRequestedName;
+                String senderNotifMessage = "Your trade request to" +
+                        receiverName + " " + "for " + itemRequestedName + " "
+                        + "was declined. " + showReason(status) ;
+
+
+                Notifications receiverNotif = notifService.
+                        createNotification(tradeToUpdate.getReceiver(),receiverNotifMessage);
+                notifService.linkNotificationToTrade(receiverNotif,tradeToUpdate);
+
+                //sender side
+                Notifications senderNotif = notifService.
+                        createNotification(tradeToUpdate.getSender(),senderNotifMessage);
+                notifService.linkNotificationToTrade(senderNotif,tradeToUpdate);
+
+                //sender email
+                Map<String, String> senderEmailVariables = emailService.formEmailBody(senderName,
+                        senderNotifMessage,
+                        subject, "email-template");
+                Map<String, Object> senderVariables = emailService
+                        .formTemplateVariables(senderName,
+                                senderNotifMessage);
+                emailService.sendEmail(senderEmail, senderEmailVariables.get("subject"),
+                        senderEmailVariables.get("templateName"),
+                        senderVariables);
+
+                //receiver email
+                Map<String, String> receiverEmailVariables = emailService.formEmailBody(receiverName,
+                        receiverNotifMessage,
+                        subject, "email-template");
+                Map<String, Object> receiverVariables = emailService
+                        .formTemplateVariables(receiverName,
+                                receiverNotifMessage);
+                emailService.sendEmail(receiverName, receiverEmailVariables.get("subject"),
+                        receiverEmailVariables.get("templateName"),
+                        receiverVariables);
+            }
+        }else{
+            throw new NotAssociatedException("trade","user, user not the receiving party");
+        }
+        return new ActionSuccess("Trade status updated successfully");
+    }
+
+    private String showReason(ChangeTradeStatus statusWithReason){
+        String reason = statusWithReason.getReason();
+        return reason == null ? "" : "Reason for Rejection: " + reason;
+    }
+
+    private String customAcceptanceMessage(Trades trade){
+        return "Kindly meet at" +
+                trade.getExchangeLocation() + " on " +
+                trade.getExchangeDate().toLocalDate() +
+                "at " + " " +  trade.getExchangeDate().toLocalTime() + " to complete the exchange";
+    }
+
+
+    private Trades updateTradeStatusEntity(Trades tradeToUpdate, ChangeTradeStatus newStatus){
+        if(newStatus!=null){
+            tradeToUpdate.setStatus(newStatus.getStatus());
+        }
+        return tradeToUpdate;
     }
 
     private User checkUserExist(Long userId){

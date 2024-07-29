@@ -1,5 +1,6 @@
 package com.capstone.closetconnect.controllers;
 
+import com.capstone.closetconnect.dtos.request.ChangeTradeStatus;
 import com.capstone.closetconnect.dtos.request.RequestTrade;
 import com.capstone.closetconnect.dtos.response.ActionSuccess;
 import com.capstone.closetconnect.dtos.response.TradeDetails;
@@ -55,6 +56,16 @@ public class TradeController {
     @GetMapping("/getTrade/{tradeId}")
     public ResponseEntity<TradeDetails> getTrade(@PathVariable("tradeId") Long tradeId){
         return new ResponseEntity<>(tradesService.getTrade(tradeId), HttpStatus.OK);
+    }
+
+    @PutMapping("/changeTradeStatus/trade/{tradeId}/user/{userId}")
+    public ResponseEntity<ActionSuccess> updateTradeStat(
+            @PathVariable("tradeId") Long tradeId,
+            @PathVariable("userId") Long userid,
+            @RequestBody @Valid  ChangeTradeStatus tradeStatus
+            ){
+        return new ResponseEntity<>(tradesService.updateTradeStatus(userid,tradeId,tradeStatus)
+                ,HttpStatus.OK);
     }
 
     private void checkPagination(int pageNumber, int pageSize){
