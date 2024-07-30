@@ -50,7 +50,6 @@ public class ClothingItem {
         clothItemEntity.setSource(newClothingItem.getSource());
         clothItemEntity.setName(newClothingItem.getName());
         clothItemEntity.setGender(newClothingItem.getGender());
-        clothItemEntity.setStatus(newClothingItem.getStatus());
         return clothItemEntity;
     }
 
