@@ -40,7 +40,9 @@ public class SecurityConfiguration {
                                 .requestMatchers
                                         ("/api/v1/auth/**",
                                                 "/api/v1/clothingItems/all",
-                                                "/api/v1/clothingItems/cloth/{clothId}")
+                                                "/api/v1/clothingItems/cloth/{clothId}",
+                                                "api/v1/clothingItems/search/all"
+                                                )
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated()
