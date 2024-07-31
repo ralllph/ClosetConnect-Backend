@@ -1,5 +1,6 @@
 package com.capstone.closetconnect.dtos.response;
 
+import com.capstone.closetconnect.enums.NotificationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +23,8 @@ public class NotifDetails {
     private LocalDate date;
 
     private LocalTime time;
+
+    private NotificationStatus notificationStatus;
 
     private Long tradeId;
 

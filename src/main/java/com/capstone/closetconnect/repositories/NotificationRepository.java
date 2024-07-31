@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface NotificationRepository  extends JpaRepository<Notifications, Long> {
 
-    @Query("SELECT n FROM Notifications n WHERE n.user.id=:userId ORDER BY n.createdAt DESC")
-    Optional<List<Notifications>> findByUserId(@Param("userId") Long userId);
+    @Query("SELECT DISTINCT n FROM Notifications n WHERE n.user.id=:userId ORDER BY n.createdAt DESC")
+    Optional<List<Notifications>> findNotifsByUserId(@Param("userId") Long userId);
 
 }

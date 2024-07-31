@@ -48,7 +48,7 @@ public class NotifServiceImpl implements  NotifService{
 
     @Override
     public List<NotifDetails> listNotifByUser(Long userId) {
-        List<Notifications> foundNotifs = notifRepo.findByUserId(userId)
+        List<Notifications> foundNotifs = notifRepo.findNotifsByUserId(userId)
                 .orElseThrow(()-> new NotFoundException("notification for user", userId));
         return notifListToDtos(foundNotifs);
     }

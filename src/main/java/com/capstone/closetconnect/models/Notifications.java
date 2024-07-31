@@ -37,7 +37,7 @@ public class Notifications {
     @Enumerated(EnumType.STRING)
     private NotificationStatus status = NotificationStatus.UNREAD;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trade_id")
     private Trades trade;
 
@@ -49,6 +49,7 @@ public class Notifications {
         NotifDetails notifDto = new NotifDetails();
         notifDto.setId(notifEntity.getId());
         notifDto.setMessage(notifEntity.getMessage());
+        notifDto.setNotificationStatus(notifEntity.getStatus());
         notifDto.setDate(notifEntity.getCreatedAt()
                 .toInstant()
                 .atZone(ZoneId.systemDefault())
@@ -64,12 +65,12 @@ public class Notifications {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Notifications that = (Notifications) o;
-        return Objects.equals(id, that.id) && Objects.equals(user, that.user) && Objects.equals(message, that.message) && status == that.status && Objects.equals(createdAt, that.createdAt);
+        return Objects.equals(id, that.id) && Objects.equals(user, that.user) && Objects.equals(message, that.message) && status == that.status && Objects.equals(trade, that.trade) && Objects.equals(createdAt, that.createdAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, user, message, status, createdAt);
+        return Objects.hash(id, user, message, status, trade, createdAt);
     }
 
     @Override
