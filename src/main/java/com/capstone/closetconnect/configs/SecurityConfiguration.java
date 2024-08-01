@@ -42,6 +42,7 @@ public class SecurityConfiguration {
                                                 "/api/v1/clothingItems/all",
                                                 "/api/v1/clothingItems/cloth/{clothId}",
                                                 "api/v1/clothingItems/search/all",
+                                                "https://closetconnect.netlify.app",
                                                 "https://closetconnect.netlify.app/"
                                                 )
                                 .permitAll()
