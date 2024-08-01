@@ -22,6 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -178,9 +180,18 @@ public class ClothingItemsServiceImpl implements ClothingItemsService {
     }
 
     @Override
-    public Page<ClothDetailsWithUser> getAllClothingItemsWithUserInfo(Pageable pageable) {
-        return clothingItemsRepository
-                .getAllClothingItemsWithUserInfo(pageable);
+    public Page<ClothDetailsWithUser> getAllClothingItemsWithUserInfo(Boolean latest,
+                                                                      Pageable pageable) {
+        if(Boolean.TRUE.equals(latest)){
+            LocalDate startDate= LocalDate.now().minusDays(7);
+            Date startDateSql = Date.valueOf(startDate);
+            return clothingItemsRepository
+                    .getRecentClothingItemsWithUserInfo(startDateSql,pageable);
+        }
+        else {
+            return clothingItemsRepository
+                    .getAllClothingItemsWithUserInfo(pageable);
+        }
     }
 
     @Override

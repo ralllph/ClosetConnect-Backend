@@ -13,6 +13,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Optional;
 
 
@@ -28,7 +30,8 @@ public interface ClothingItemsRepository extends JpaRepository<ClothingItems, Lo
 
     @Query("SELECT new com.capstone.closetconnect.dtos.response.ClothDetailsWithUser(" +
             "ci.id, ci.name, ci.description, ci.photoUrl, ci.status, " +
-            "ci.user.id, ci.user.name AS userFullName, ci.createdAt,ci.gender,ci.type) " +
+            "ci.user.id, ci.user.name AS userFullName,ci.clothingItemSize," +
+            " ci.createdAt,ci.gender,ci.type) " +
             "FROM ClothingItems ci JOIN ci.user WHERE ci.status= 'AVAILABLE'  " +
             "AND ci.name LIKE %:itemName% " +
             " ORDER BY ci.createdAt DESC")
@@ -38,7 +41,8 @@ public interface ClothingItemsRepository extends JpaRepository<ClothingItems, Lo
 
     @Query("SELECT new com.capstone.closetconnect.dtos.response.ClothDetailsWithUser(" +
             "ci.id, ci.name, ci.description, ci.photoUrl,ci.status, " +
-            "ci.user.id, ci.user.name AS userFullName, ci.createdAt,ci.gender,ci.type) " +
+            "ci.user.id, ci.user.name AS userFullName,ci.clothingItemSize," +
+            " ci.createdAt,ci.gender,ci.type) " +
             "FROM ClothingItems ci JOIN ci.user WHERE ci.status='AVAILABLE'" +
             "AND ci.gender =:gender " +
             " ORDER BY ci.createdAt DESC")
@@ -47,7 +51,8 @@ public interface ClothingItemsRepository extends JpaRepository<ClothingItems, Lo
 
     @Query("SELECT new com.capstone.closetconnect.dtos.response.ClothDetailsWithUser(" +
             "ci.id, ci.name, ci.description, ci.photoUrl,ci.status, " +
-            "ci.user.id, ci.user.name AS userFullName, ci.createdAt,ci.gender,ci.type) " +
+            "ci.user.id, ci.user.name AS userFullName,ci.clothingItemSize," +
+            " ci.createdAt,ci.gender,ci.type) " +
             "FROM ClothingItems ci JOIN ci.user WHERE ci.status='AVAILABLE'" +
             "AND ci.type = :type " +
             " ORDER BY ci.createdAt DESC")
@@ -56,14 +61,28 @@ public interface ClothingItemsRepository extends JpaRepository<ClothingItems, Lo
 
     @Query("SELECT new com.capstone.closetconnect.dtos.response.ClothDetailsWithUser(" +
             "ci.id, ci.name, ci.description, ci.photoUrl, ci.status, " +
-            "ci.user.id, ci.user.name AS userFullName, ci.createdAt,ci.gender,ci.type) " +
+            "ci.user.id, ci.user.name AS userFullName,ci.clothingItemSize," +
+            " ci.createdAt,ci.gender,ci.type) " +
             "FROM ClothingItems ci JOIN ci.user WHERE ci.status='AVAILABLE' " +
             "ORDER BY ci.createdAt DESC")
     Page<ClothDetailsWithUser> getAllClothingItemsWithUserInfo(Pageable pageable);
 
     @Query("SELECT new com.capstone.closetconnect.dtos.response.ClothDetailsWithUser(" +
             "ci.id, ci.name, ci.description, ci.photoUrl, ci.status, " +
-            "ci.user.id, ci.user.name AS userFullName, ci.createdAt,ci.gender,ci.type) " +
+            "ci.user.id, ci.user.name AS userFullName,ci.clothingItemSize," +
+            " ci.createdAt, ci.gender, ci.type) " +
+            "FROM ClothingItems ci JOIN ci.user WHERE ci.status='AVAILABLE' " +
+            "AND ci.createdAt >= :startDate " +
+            "ORDER BY ci.createdAt DESC")
+    Page<ClothDetailsWithUser> getRecentClothingItemsWithUserInfo
+            (@Param("startDate") Date startDate,
+             Pageable pageable);
+
+
+    @Query("SELECT new com.capstone.closetconnect.dtos.response.ClothDetailsWithUser(" +
+            "ci.id, ci.name, ci.description, ci.photoUrl, ci.status, " +
+            "ci.user.id, ci.user.name AS userFullName,ci.clothingItemSize," +
+            " ci.createdAt,ci.gender,ci.type) " +
             "FROM ClothingItems ci JOIN ci.user WHERE ci.id = :clothId " +
             "ORDER BY ci.createdAt DESC")
     Optional<ClothDetailsWithUser> getClothingItemWithUserDetails(@Param("clothId")
