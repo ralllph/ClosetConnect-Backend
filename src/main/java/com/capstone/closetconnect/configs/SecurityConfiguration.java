@@ -41,9 +41,7 @@ public class SecurityConfiguration {
                                         ("/api/v1/auth/**",
                                                 "/api/v1/clothingItems/all",
                                                 "/api/v1/clothingItems/cloth/{clothId}",
-                                                "api/v1/clothingItems/search/all",
-                                                "https://closetconnect.netlify.app",
-                                                "https://closetconnect.netlify.app/"
+                                                "api/v1/clothingItems/search/all"
                                                 )
                                 .permitAll()
                                 .anyRequest()
@@ -62,7 +60,11 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfig = new CorsConfiguration();
-        corsConfig.setAllowedOrigins(List.of("http://localhost:3000","http://localhost:3000/" ));
+        corsConfig.setAllowedOrigins(List.of
+                ("http://localhost:3000",
+                        "http://localhost:3000/",
+                        "https://closetconnect.netlify.app",
+                        "https://closetconnect.netlify.app/"));
         corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         corsConfig.setAllowedHeaders(List.of("*"));
         corsConfig.setAllowCredentials(true);
