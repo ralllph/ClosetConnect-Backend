@@ -34,7 +34,7 @@ public interface ClothingItemsService {
 
     Page<ClothingItemsDto> getAllUserClothingItems(Long userId, Pageable pageable);
 
-    Page<ClothDetailsWithUser> getAllClothingItemsWithUserInfo(Pageable pageable);
+    Page<ClothDetailsWithUser> getAllClothingItemsWithUserInfo(Boolean latest, Pageable pageable);
 
     ActionSuccess deleteClothingItem(Long clothId, Long userId);
 

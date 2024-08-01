@@ -100,11 +100,13 @@ public class ClothingItemsController {
     @GetMapping("/all")
     public ResponseEntity<Page<ClothDetailsWithUser>> getAllClothingItems
             (@RequestParam(defaultValue = "0") int page,
-             @RequestParam(defaultValue = "10") int size
+             @RequestParam(defaultValue = "10") int size,
+             @RequestParam(required = false) Boolean latest
             ){
         checkPagination(page,size);
         Pageable pageable = PageRequest.of(page, size);
-        return new ResponseEntity<>(clothingItemsService.getAllClothingItemsWithUserInfo(pageable)
+        return new ResponseEntity<>(clothingItemsService
+                .getAllClothingItemsWithUserInfo(latest, pageable)
                 , HttpStatus.OK);
     }
 

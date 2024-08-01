@@ -1,6 +1,7 @@
 package com.capstone.closetconnect.dtos.response;
 
 
+import com.capstone.closetconnect.enums.ClothSize;
 import com.capstone.closetconnect.enums.ClothType;
 import com.capstone.closetconnect.enums.Gender;
 import com.capstone.closetconnect.enums.Status;
@@ -29,6 +30,8 @@ public class ClothDetailsWithUser {
 
     private String userFullName;
 
+    private ClothSize clothingItemSize;
+
     private LocalDate createdAt;
 
     private Gender gender;
@@ -38,7 +41,9 @@ public class ClothDetailsWithUser {
     public ClothDetailsWithUser(Long id, String name, String description,
                                 String photoUrl,
                                 Status status, Long userId,
-                                String userFullName, Timestamp createdAt,
+                                String userFullName,
+                                ClothSize clothingItemSize,
+                                Timestamp createdAt,
                                 Gender gender,
                                 ClothType type
                                 ) {
@@ -48,6 +53,7 @@ public class ClothDetailsWithUser {
         this.photoUrl = photoUrl;
         this.status = status;
         this.gender = gender;
+        this.clothingItemSize = clothingItemSize;
         this.type = type;
         this.userId = userId;
         this.userFullName = userFullName;
