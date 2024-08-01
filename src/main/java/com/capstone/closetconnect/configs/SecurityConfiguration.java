@@ -41,7 +41,8 @@ public class SecurityConfiguration {
                                         ("/api/v1/auth/**",
                                                 "/api/v1/clothingItems/all",
                                                 "/api/v1/clothingItems/cloth/{clothId}",
-                                                "api/v1/clothingItems/search/all"
+                                                "api/v1/clothingItems/search/all",
+                                                "/api/v1/clothingItems/{clothId}/cloth-image"
                                                 )
                                 .permitAll()
                                 .anyRequest()
