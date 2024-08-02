@@ -22,10 +22,13 @@ public class TradeDetails {
     private String exchangeLocation;
     private LocalDateTime exchangeDate;
     private LocalDateTime createdAt;
+    private Long tradersItemId;
+    private Long requestedItemId;
 
     public TradeDetails(Long tradeId, String senderName, String receiverName,
                         String offeredItemName, String requestedItemName,
                         TradeStatus status, String exchangeLocation,
+                        Long requestedItemId, Long tradersItemId,
                         LocalDateTime exchangeDate, Timestamp createdAt) {
         this.tradeId = tradeId;
         this.senderName = senderName;
@@ -33,6 +36,8 @@ public class TradeDetails {
         this.offeredItemName = offeredItemName;
         this.requestedItemName = requestedItemName;
         this.status = status;
+        this.requestedItemId = requestedItemId;
+        this.tradersItemId = tradersItemId;
         this.exchangeLocation = exchangeLocation;
         this.exchangeDate = exchangeDate;
         this.createdAt = createdAt.toLocalDateTime();

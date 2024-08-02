@@ -17,7 +17,7 @@ public interface TradeRepository extends JpaRepository<Trades, Long> {
     @Query("SELECT new com.capstone.closetconnect.dtos.response.TradeDetails(" +
             "t.id, t.sender.name, t.receiver.name, " +
             "t.offeredItem.name, t.requestedItem.name, " +
-            "t.status, t.exchangeLocation, " +
+            "t.status, t.exchangeLocation,t.requestedItem.id,t.offeredItem.id, " +
             "t.exchangeDate, t.createdAt) " +
             "FROM Trades t " +
             "WHERE t.sender.id = :userId ORDER BY t.createdAt DESC")
@@ -26,7 +26,7 @@ public interface TradeRepository extends JpaRepository<Trades, Long> {
     @Query("SELECT new com.capstone.closetconnect.dtos.response.TradeDetails(" +
             "t.id, t.sender.name, t.receiver.name, " +
             "t.offeredItem.name, t.requestedItem.name, " +
-            "t.status, t.exchangeLocation, " +
+            "t.status, t.exchangeLocation,t.requestedItem.id,t.offeredItem.id, " +
             "t.exchangeDate, t.createdAt) " +
             "FROM Trades t " +
             "WHERE t.receiver.id = :userId ORDER BY t.createdAt DESC")
@@ -35,7 +35,7 @@ public interface TradeRepository extends JpaRepository<Trades, Long> {
     @Query("SELECT new com.capstone.closetconnect.dtos.response.TradeDetails(" +
             "t.id, t.sender.name, t.receiver.name, " +
             "t.offeredItem.name, t.requestedItem.name, " +
-            "t.status, t.exchangeLocation, " +
+            "t.status, t.exchangeLocation,t.requestedItem.id,t.offeredItem.id, " +
             "t.exchangeDate, t.createdAt) " +
             "FROM Trades t " +
             "WHERE t.id = :tradeId ORDER BY t.createdAt DESC")
