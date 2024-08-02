@@ -19,7 +19,7 @@ import com.capstone.closetconnect.repositories.UserRepository;
 import com.capstone.closetconnect.services.clothing_items.ClothingItemsService;
 import com.capstone.closetconnect.services.email.EmailService;
 import com.capstone.closetconnect.services.notifications.NotifService;
-import liquibase.change.Change;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -28,10 +28,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
+
 import java.util.Map;
-import java.util.Optional;
+
 
 @Service
 @Slf4j
@@ -57,6 +56,7 @@ public class TradeServiceImpl implements  TradesService{
         Long tradeInitiatorId = tradeRequest.getTradeInitiatorId();
         Long tradeInitiatorClothId = tradeRequest.getInitiatorItemId();
         Long userToTradeWithId = tradeRequest.getUserToTradeWithId();
+        String message = tradeRequest.getMessage();
         String exchangeLocation = tradeRequest.getExchangeLocation();
         LocalDateTime exchangeDate = tradeRequest.getExchangeDate();
 
@@ -77,7 +77,7 @@ public class TradeServiceImpl implements  TradesService{
         //create notif for receiver
         String receiverNotifMessage = prepareNotificationMessage(tradeInitiator,
                 tradeInitiatorCloth,
-                clothRequested,exchangeLocation,exchangeDate);
+                clothRequested,exchangeLocation,exchangeDate,message);
         Notifications receiverNotif = notifService.
                 createNotification(userToTradeWith,receiverNotifMessage);
 
@@ -92,7 +92,7 @@ public class TradeServiceImpl implements  TradesService{
         // Prepare notifications and emails
         String notificationMessage = prepareNotificationMessage(tradeInitiator,
                 tradeInitiatorCloth,
-                clothRequested,exchangeLocation,exchangeDate);
+                clothRequested,exchangeLocation,exchangeDate,message);
         prepareAndSendEmails(tradeInitiator, userToTradeWith, notificationMessage);
 
         return new ActionSuccess("Trade request Sent Successfully");
@@ -128,12 +128,13 @@ public class TradeServiceImpl implements  TradesService{
                                               ClothingItems tradeInitiatorCloth,
                                               ClothingItems clothRequested,
                                               String exchangeLocation,
-                                              LocalDateTime exchangeDate) {
+                                              LocalDateTime exchangeDate,
+                                              String message) {
         String traderInitiatorName = tradeInitiator.getName();
         String tradeInitiatorClothName = tradeInitiatorCloth.getName();
         String clothRequestedName = clothRequested.getName();
         return createNotifiMessage(traderInitiatorName, tradeInitiatorClothName,
-                clothRequestedName,exchangeLocation,exchangeDate);
+                clothRequestedName,exchangeLocation,exchangeDate,message);
     }
 
 
@@ -270,7 +271,8 @@ public class TradeServiceImpl implements  TradesService{
                         senderVariables);
 
                 //receiver email
-                Map<String, String> receiverEmailVariables = emailService.formEmailBody(receiverName,
+                Map<String, String> receiverEmailVariables = emailService
+                        .formEmailBody(receiverName,
                         receiverNotifMessage,
                         subject, "email-template");
                 Map<String, Object> receiverVariables = emailService
@@ -312,7 +314,8 @@ public class TradeServiceImpl implements  TradesService{
                         senderVariables);
 
                 //receiver email
-                Map<String, String> receiverEmailVariables = emailService.formEmailBody(receiverName,
+                Map<String, String> receiverEmailVariables = emailService
+                        .formEmailBody(receiverName,
                         receiverNotifMessage,
                         subject, "email-template");
                 Map<String, Object> receiverVariables = emailService
@@ -337,7 +340,8 @@ public class TradeServiceImpl implements  TradesService{
         return "Kindly meet at" +
                 trade.getExchangeLocation() + " on " +
                 trade.getExchangeDate().toLocalDate() +
-                "at " + " " +  trade.getExchangeDate().toLocalTime() + " to complete the exchange";
+                "at " + " " +  trade.getExchangeDate().toLocalTime() +
+                " to complete the exchange";
     }
 
 
@@ -355,11 +359,17 @@ public class TradeServiceImpl implements  TradesService{
 
     private String createNotifiMessage(String tradeInitiator, String tradeInitiatorCloth,
                                        String clothRequested, String exchangeLocation,
-                                       LocalDateTime exchangeDate){
+                                       LocalDateTime exchangeDate, String message){
         return tradeInitiator + " " + "wants to trade "+ " " + tradeInitiatorCloth + " "
                 + "for your"
                 + " " + clothRequested + " " +  "at" + " " + exchangeLocation + " " + "on"
-                +  " " + exchangeDate.toLocalDate() + " " + "at " +  exchangeDate.toLocalTime();
+                +  " " + exchangeDate.toLocalDate() + " " + "at " +  exchangeDate.toLocalTime() +
+                "." + " " + checkUserLeftNote(tradeInitiator,message) ;
+    }
+
+    private String checkUserLeftNote(String tradeInitiator, String message){
+        return message != null ? "A short note from " + " " + tradeInitiator + ":"
+                + " " + "'"+message+"'" : "";
     }
 
 

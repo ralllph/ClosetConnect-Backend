@@ -29,4 +29,6 @@ public class RequestTrade {
 
     @NotBlank(message = "exchange location cannot be blank")
     private String exchangeLocation;
+
+    private String message;
 }
